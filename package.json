@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.38.4",
     "next": "15.1.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
@@ -16,6 +19,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "drizzle-kit": "^0.30.2",
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
     "postcss": "^8",
