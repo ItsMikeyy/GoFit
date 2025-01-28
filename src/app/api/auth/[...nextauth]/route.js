@@ -8,7 +8,12 @@ export const authOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         })
     ],
+    callbacks: {
+        async redirect() {
+          return "http://localhost:3000/dashboard";
+        },
     secret: process.env.NEXTAUTH_SECRET
+    }
 };
 
 const handler = NextAuth(authOptions);
