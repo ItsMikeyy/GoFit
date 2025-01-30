@@ -1,29 +1,43 @@
+"use client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { users } from "@/db/schema";
 import AccountInfoForm from "../components/AccountInfoForm";
-export default async function Dashboard() {
-    const session = await getServerSession();
-    if (!session) {
-        redirect("/api/auth/signin");
+import { useEffect, useState } from "react";
+export default function Dashboard() {
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        function fetchUser() {
+            fetch("/api/user")
+            .then(res => res.json())
+            .then(json => {
+                console.log(json);
+                if (json.error) {
+                    setError(json.error);
+                    setLoading(false);
+                } else {
+                    setUser(json.user);
+                    setLoading(false);
+                }
+            })
+            .catch(err => {
+                setError("An error occurred");
+                setLoading(false);
+            });
+        }
+    }, []);
+    if (loading) {
+        return <p>Loading...</p>;
     }
-
-    // const user = await db.select().from(users).where(eq(users.email, session.user.email)).limit(1);
-    // if (user[0]) {
-    //     console.log(user)
-    //     console.log("user found!");
-    // }
-    // else {
-    //     console.log("No user found");
-    // }
-
+    else if (error) {
+        return <p>{error}</p>;
+    }
     return (
         <div>
-            <p>Welcome {session.user.name} </p>
-            <AccountInfoForm />
-
+            <h1>Dashboard</h1>
+            <p>{user.name}</p>
         </div>
     )
 }
