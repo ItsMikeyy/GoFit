@@ -11,22 +11,22 @@ export function UserProvider({ children }) {
   const { data: session, status } = useSession();
   const [user, setUser] = useState(null);
 
-//   useEffect(() => {
-//     async function fetchUser() { 
-//         const res = await fetch("/api/user");
-//         const data = await res.json();
-//         console.log(data);
-//         setUser(data);
-//     }
-//     if (session && session.user) {
-//         fetchUser();
-//     }
+  useEffect(() => {
+    async function fetchUser() { 
+        const res = await fetch("/api/user");
+        const data = await res.json();
+        setUser(data.user);
+    }
+    if (session && session.user && !user) {
+      fetchUser();
+    }
+    else {
+    }
 
-//   }, [status, session]);
-
+  }, [status, session, user]);
 
   return (
-    <UserContext.Provider value={{ session, status }}>
+    <UserContext.Provider value={ user }>
         {children}
     </UserContext.Provider>
     );

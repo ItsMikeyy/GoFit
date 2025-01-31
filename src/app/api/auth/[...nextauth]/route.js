@@ -15,6 +15,7 @@ export const authOptions = {
             return `${baseUrl}/dashboard`;
         },
     },
+    secret: process.env.NEXTAUTH_SECRET,
       
 };
 
