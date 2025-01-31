@@ -1,6 +1,8 @@
 import NextAuth from "next-auth/next";
 import GoogleProvier from "next-auth/providers/google";
-
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 export const authOptions = {
     providers: [
         GoogleProvier({
@@ -9,11 +11,11 @@ export const authOptions = {
         })
     ],
     callbacks: {
-        async redirect() {
-          return "http://localhost:3000/dashboard";
+        async redirect({url, baseUrl}) {
+            return `${baseUrl}/dashboard`;
         },
-    secret: process.env.NEXTAUTH_SECRET
-    }
+    },
+      
 };
 
 const handler = NextAuth(authOptions);
