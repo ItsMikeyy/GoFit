@@ -1,9 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { db } from "@/db";
-import { eq } from "drizzle-orm";
-import { users } from "@/db/schema";
 
 const UserContext = createContext(null);
 
@@ -13,16 +10,21 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     async function fetchUser() { 
-        const res = await fetch("/api/user");
-        const data = await res.json();
-        setUser(data.user);
+      const res = await fetch("/api/user");
+      const data = await res.json();
+      if (data.error) {
+          setUser(null);
+      }
+      else if (data.user && data.found) {
+            setUser(data.user);
+      }
+      else {
+        setUser(false);
+      }
     }
-    if (session && session.user && !user) {
+    if (!user) {
       fetchUser();
     }
-    else {
-    }
-
   }, [status, session, user]);
 
   return (
