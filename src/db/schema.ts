@@ -5,6 +5,7 @@ export const users = sqliteTable('users', {
     id: integer('id').primaryKey(),
     name: text('name').notNull(),
     email: text('email').notNull(),
+    gender: text('gender').notNull(),
     age: integer('age'),
     weight: real('weight'),
     height: real('height'),

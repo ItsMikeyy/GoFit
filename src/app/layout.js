@@ -28,7 +28,7 @@ export default async function RootLayout({ children }) {
         <SessionProvider session={session}>
           <UserProvider>
             {children}
-            <NavMenu />
+            {/* <NavMenu /> */}
           </UserProvider>
         </SessionProvider>
       </body>
