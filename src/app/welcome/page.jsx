@@ -1,11 +1,24 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useUser } from '../components/UserContext';
 
 const WelcomePage = () => {
     const { data: session, status } = useSession();
     const router = useRouter()
+    const user = useUser();
+    if (!session) {
+        router.push("/");
+    }
+    
+    useEffect(() => { 
+        if(user) {
+            router.push("/dashboard");
+        }
+    }, [user]);
+    
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -16,10 +29,6 @@ const WelcomePage = () => {
         activity: '',
         goal: '',
     });
-
-    if (!session) {
-        router.push("/");
-    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;

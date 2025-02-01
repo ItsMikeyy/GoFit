@@ -23,8 +23,10 @@ export function UserProvider({ children }) {
       }
     }
     if (!user) {
+      console.log("fetching user");
       fetchUser();
     }
+    
   }, [status, session, user]);
 
   return (

@@ -43,11 +43,6 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-    const macroRatios = {
-        protein: 0.3, 
-        fat: 0.2, 
-        carbs: 0.5 
-      };
     const session = await getServerSession(authOptions);
     if (!session) {
         return NextResponse.json({ error: "Unauthorized", found: false }, { status: 401 });
@@ -63,29 +58,34 @@ export async function POST(req) {
             bmr = (10 * data.weight + 6.25 * data.height - 5 * data.age - 161) * data.activity;
         }
 
-        const goalCalories = bmr + Number(data.goal);
+        const goalCalories = Math.floor(bmr + Number(data.goal));
 
-        
-
-        const proteinGrams = 2 * data.weight;
+        const proteinGrams = Math.floor(2 * data.weight);
         const proteinCalories = proteinGrams * 4;
+
 
         const carbCalories = goalCalories * 0.4;
         const fatCalories = goalCalories - (proteinCalories + carbCalories);
+        const carbGrams = Math.floor(carbCalories / 4);
+        const fatGrams = Math.floor(fatCalories / 9);
 
-        const carbGrams = carbCalories / 4;
-        const fatGrams = fatCalories / 9;
 
-        console.log(proteinGrams, fatGrams, carbGrams);
-        console.log(goalCalories);
-        // Insert user data into the database
-        // const result = await db.insert(users).values({
-        //     ...data,
-        //     proteinGrams,
-        //     fatGrams,
-        //     carbGrams
-        // }).execute();
-        const result = 0;
+
+        const user_data = {
+            ...data,
+            email: session.user.email,
+            goalCalories: goalCalories,
+            goalProtein: proteinGrams,
+            goalFat: fatGrams,
+            goalCarbs: carbGrams,
+        }
+        delete user_data.goal;
+        delete user_data.activity;
+        console.log(user_data);
+        const result = await db.insert(users).values({
+            ...user_data,
+            email: session.user.email,
+        }).execute();
         if (result) {
             return NextResponse.json({ message: "User created successfully", success: true });
         } else {
