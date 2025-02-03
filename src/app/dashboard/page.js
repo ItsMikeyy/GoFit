@@ -4,12 +4,24 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import DailySummary from "@/app/components/DailySummary";
 export default function Dashboard() {
-    const user = useUser();
+    const user = {
+        age: 22,    
+        email: "careyamichael2002@gmail.com",
+        gender: "male",
+        goalCalories: 3139,
+        goalCarbs: 313,
+        goalFat: 138,
+        goalProtein: 160,
+        height: 180,
+        id: 1,
+        name: "Michael",
+        weight: 80
+    };
     const { data: session, status } = useSession();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
- 
     useEffect(() => {
         if (status === "loading") return;
         
@@ -34,9 +46,8 @@ export default function Dashboard() {
     return (
         <div>
             <h1>Dashboard</h1>
-            <p>{user.age}</p>
-            <p>{user.name}</p>
-            <p>{user.email}</p>
+            <p>Welcome {user.name}</p>
+            <DailySummary user={user}/>
         </div>
     );
 }

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
+    "@mantine/core": "^7.16.2",
+    "@mantine/hooks": "^7.16.2",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.4",
     "next": "15.1.4",
