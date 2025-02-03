@@ -1,12 +1,24 @@
+"use client";
 import { Card, Text, Grid, Box, Flex, Progress, RingProgress } from "@mantine/core";
+import { useEffect } from "react";
+
 const DailySummary = (props) => {
+    const [macros, setMacros] = useState({});
+    const [loading, setLoading] = useState(true);
     const formatDate = (date) => {
         return new Intl.DateTimeFormat("en-US", {
           month: "2-digit",
           day: "2-digit",
           year: "numeric",
         }).format(new Date(date));
-      };
+    };
+    
+    useEffect(() => {
+        const fetchNutrition = async () => {
+        }  
+    })
+      
+
     return (
         <Card shadow="xs" padding="md" radius="md">
             <Flex direction="column" gap="xl">
