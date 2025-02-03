@@ -26,9 +26,9 @@ export default async function RootLayout({ children }) {
   const session = await getServerSession()
   return (
     <html lang="en">
-      <head>
+      {/* <head>
         <ColorSchemeScript />
-      </head>
+      </head> */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <MantineProvider>
           <SessionProvider session={session}>

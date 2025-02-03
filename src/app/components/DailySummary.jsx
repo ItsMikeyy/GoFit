@@ -3,21 +3,16 @@ import { Card, Text, Grid, Box, Flex, Progress, RingProgress } from "@mantine/co
 import { useEffect } from "react";
 
 const DailySummary = (props) => {
-    const [macros, setMacros] = useState({});
-    const [loading, setLoading] = useState(true);
+    // const [macros, setMacros] = useState({});
+    // const [loading, setLoading] = useState(true);
+    console.log(props.user);
     const formatDate = (date) => {
         return new Intl.DateTimeFormat("en-US", {
-          month: "2-digit",
-          day: "2-digit",
-          year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            year: "numeric",
         }).format(new Date(date));
     };
-    
-    useEffect(() => {
-        const fetchNutrition = async () => {
-        }  
-    })
-      
 
     return (
         <Card shadow="xs" padding="md" radius="md">
@@ -54,17 +49,15 @@ const DailySummary = (props) => {
                         <Box>
                             <Grid.Col span={12}>
                                 <Box padding="sm">
-                                    <Text size="xl" weight={700}>
-                                        <RingProgress 
-                                            size={125}
-                                            label={<Text ta="center" size="md">{props.user.goalCalories}</Text>} 
-                                            sections={[
-                                                { value: 40, color: 'red' },
-                                                { value: 10, color: 'orange' },
-                                                { value: 15, color: 'blue' },
-                                            ]} 
-                                        />
-                                    </Text>
+                                    <RingProgress 
+                                        size={125}
+                                        label={<Text ta="center" size="md">{props.user.goalCalories}</Text>} 
+                                        sections={[
+                                            { value: 40, color: 'red' },
+                                            { value: 10, color: 'orange' },
+                                            { value: 15, color: 'blue' },
+                                        ]} 
+                                    />
                                 </Box>
                             </Grid.Col>
                         </Box>

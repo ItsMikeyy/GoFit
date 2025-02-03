@@ -5,29 +5,14 @@ import { useSession } from "next-auth/react";
 const UserContext = createContext(null);
 
 export function UserProvider({ children }) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    async function fetchUser() { 
-      const res = await fetch("/api/user");
-      const data = await res.json();
-      if (data.error) {
-          setUser(null);
-      }
-      else if (data.user && data.found) {
-            setUser(data.user);
-      }
-      else {
-        setUser(false);
-      }
+    if (session.user) {
+      setUser(session.user);
     }
-    if (!user) {
-      console.log("fetching user");
-      fetchUser();
-    }
-    
-  }, [status, session, user]);
+  }, [session]);
 
   return (
     <UserContext.Provider value={ user }>

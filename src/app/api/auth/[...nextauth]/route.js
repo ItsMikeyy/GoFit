@@ -14,6 +14,27 @@ export const authOptions = {
         async redirect({url, baseUrl}) {
             return `${baseUrl}/dashboard`;
         },
+        async jwt({token, user}) {
+            if(user) {
+                const dbuser = await db.select().from(users).where(eq(users.email, token.email)).limit(1);
+                if(dbuser.length > 0) {
+                    token.user = dbuser[0];
+                    console.log(token, dbuser[0]);
+                }
+            }
+            return token;
+        },
+        async session({session, token}) {
+            console.log("session", session);
+            console.log("token", token);
+            session.user = token.user;
+            return session;
+        }
+    },
+    session: {
+        jwt: true,
+        maxAge: 30 * 24 * 60 * 60
+
     },
     secret: process.env.NEXTAUTH_SECRET,
       
