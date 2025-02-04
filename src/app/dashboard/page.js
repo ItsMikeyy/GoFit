@@ -15,7 +15,6 @@ export default function Dashboard() {
     },[]);
     const user = useUser();
     if (!user) return <p>Loading...</p>;
-    console.log(user);
     return (
         <div>
             <DailySummary user={user} />

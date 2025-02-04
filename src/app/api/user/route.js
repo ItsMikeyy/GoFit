@@ -69,8 +69,6 @@ export async function POST(req) {
         const carbGrams = Math.floor(carbCalories / 4);
         const fatGrams = Math.floor(fatCalories / 9);
 
-
-
         const user_data = {
             ...data,
             email: session.user.email,
