@@ -22,6 +22,15 @@ const DailySummary = (props) => {
     }, []);
     if(!nutrition) return <p>Loading...</p>;
 
+
+    const proteinPercent = (nutrition.protein / props.user.goalProtein) * 100;
+    const carbsPercent = (nutrition.carbs / props.user.goalCarbs) * 100;
+    const fatPercent = (nutrition.fat / props.user.goalFat) * 100;
+
+    const proteinCaloriesPercentage = ((nutrition.protein * 4) / props.user.goalCalories) * 100;
+    const carbsCaloriesPercentage = ((nutrition.carbs * 4) / props.user.goalCalories) * 100;
+    const fatCaloriesPercentage = ((nutrition.fat * 9) / props.user.goalCalories) * 100;
+    
     return (
         <Card shadow="xs" padding="md" radius="md">
             <Flex direction="column" gap="xl">
@@ -34,21 +43,21 @@ const DailySummary = (props) => {
                         <Grid.Col span={12}>
                             <Box padding="sm" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Text size="lg" style={{ width: '150px' }}>Protein</Text>
-                                <Progress color="red" value={50} style={{ flex: 1, margin: '0 10px' }} />
+                                <Progress color="red" value={proteinPercent} style={{ flex: 1, margin: '0 10px' }} />
                                 <Text size="lg">{nutrition.protein}g / {props.user.goalProtein}g</Text>
                             </Box>
                         </Grid.Col>
                         <Grid.Col span={12}>
                             <Box padding="sm" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Text size="lg" style={{ width: '150px' }}>Carbohydrates</Text>
-                                <Progress color="orange" value={20} style={{ flex: 1, margin: '0 10px' }} />
+                                <Progress color="orange" value={carbsPercent} style={{ flex: 1, margin: '0 10px' }} />
                                 <Text size="lg">{nutrition.carbs}g / {props.user.goalCarbs}g</Text>
                             </Box>
                         </Grid.Col>
                         <Grid.Col span={12}>
                             <Box padding="sm" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Text size="lg" style={{ width: '150px' }}>Fat</Text>
-                                <Progress value={15} style={{ flex: 1, margin: '0 10px' }} />
+                                <Progress value={fatPercent} style={{ flex: 1, margin: '0 10px' }} />
                                 <Text size="lg">{nutrition.fat}g / {props.user.goalFat}g</Text>
                             </Box>
                         </Grid.Col>
@@ -58,12 +67,12 @@ const DailySummary = (props) => {
                             <Grid.Col span={12}>
                                 <Box padding="sm">
                                     <RingProgress 
-                                        size={125}
-                                        label={<Text ta="center" size="md">{nutrition.calories} / {props.user.goalCalories}</Text>} 
+                                        size={150}
+                                        label={<Text fw={700} ta="center" size="md">{nutrition.calories} / {props.user.goalCalories} Calories</Text>} 
                                         sections={[
-                                            { value: 40, color: 'red' },
-                                            { value: 10, color: 'orange' },
-                                            { value: 15, color: 'blue' },
+                                            { value: proteinCaloriesPercentage, color: 'red' },
+                                            { value: carbsCaloriesPercentage, color: 'orange' },
+                                            { value: fatCaloriesPercentage, color: 'blue' },
                                         ]} 
                                     />
                                 </Box>
