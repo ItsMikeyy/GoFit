@@ -46,6 +46,23 @@ export const nutritionLogs = sqliteTable('nutrition_logs', {
     fat: integer('fat'),
 });
 
+export const meals = sqliteTable("meals", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  type: text("type").notNull(), 
+  amount: real("amount").notNull(), 
+  servingSize: real("servingSize").notNull(), 
+  calories: real("calories").notNull(),
+  protein: real("protein").notNull(),
+  carbs: real("carbs").notNull(),
+  fat: real("fat").notNull(),
+  date: text("date").notNull(), 
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
+});
+
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
 
@@ -58,3 +75,5 @@ export type SelectExercises = typeof exercises.$inferSelect;
 export type InsertNutritionLogs = typeof nutritionLogs.$inferInsert;
 export type SelectNutritionLogs = typeof nutritionLogs.$inferSelect;
 
+export type InsertMeals = typeof meals.$inferInsert;
+export type SelectMeals = typeof meals.$inferSelect;
