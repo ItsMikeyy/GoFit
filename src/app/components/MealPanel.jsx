@@ -1,5 +1,6 @@
 import {Card, Text, Tabs, Button} from '@mantine/core';
 import MealList from './MealList';
+import MealModal from './MealModal';
 const MealPanel = () => { 
     return (
         <Card shadow="xs" padding="md" radius="md" style={{ marginTop: '20px' }}>
@@ -13,7 +14,7 @@ const MealPanel = () => {
                 </Tabs.List>
 
                 <Tabs.Panel value="breakfast">
-                    <MealList title="Eggs" />
+                    <MealList type="breakfast" />
                 </Tabs.Panel>
 
                 <Tabs.Panel value="lunch">
@@ -28,7 +29,7 @@ const MealPanel = () => {
                     Settings tab content
                 </Tabs.Panel>
             </Tabs>
-            <Button  size='s' style={{ width: "5%", marginTop: '20px', minWidth: "100px"}}>Add</Button>
+            <MealModal type="breakfast"/>
         </Card>
     );
 }

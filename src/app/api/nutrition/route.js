@@ -4,16 +4,10 @@ import { authOptions } from "../auth/[...nextauth]/route";
 import { db } from "@/db";
 import { and, eq } from 'drizzle-orm';
 import { nutritionLogs } from "@/db/schema";
+import formatDate from "@/app/(tools)/formatdate";
 export const GET = async (req, res) => {
     const session = await getServerSession(authOptions);
-    const formatDate = (date) => {
-        return new Intl.DateTimeFormat("en-US", {
-          month: "2-digit",
-          day: "2-digit",
-          year: "numeric",
-        }).format(new Date(date));
-    };
-
+    
     if(!session) {
         return NextResponse.json({ error: "Unauthorized", found: false }, { status: 401 });
     }
@@ -40,3 +34,4 @@ export const GET = async (req, res) => {
         return NextResponse.json({ nutrition: nutritionData[0], found: true });
     }
 }
+

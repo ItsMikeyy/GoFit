@@ -1,16 +1,10 @@
 "use client";
 import { Card, Text, Grid, Box, Flex, Progress, RingProgress } from "@mantine/core";
 import { useEffect, useState } from "react";
+import formatDate from "../(tools)/formatdate";
 
 const DailySummary = (props) => {
     const [nutrition, setNutrition] = useState({});
-    const formatDate = (date) => {
-        return new Intl.DateTimeFormat("en-US", {
-            month: "2-digit",
-            day: "2-digit",
-            year: "numeric",
-        }).format(new Date(date));
-    };
     useEffect(() => {
         const fetchNutrition = async () => {
             const res = await fetch("/api/nutrition");

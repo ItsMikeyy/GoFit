@@ -60,7 +60,6 @@ export const meals = sqliteTable("meals", {
   carbs: real("carbs").notNull(),
   fat: real("fat").notNull(),
   date: text("date").notNull(), 
-  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export type InsertUser = typeof users.$inferInsert;
