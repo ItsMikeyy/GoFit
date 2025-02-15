@@ -11,16 +11,17 @@ const MealList = (props) => {
         } 
         fetchMeals()
     }, [])
+    console.log(meals)
     return (
         <div>  
-            <Text>Breakfast</Text>
-            {meals.map((meal, id) => (
-            <Card shadow="xs" padding="md" radius="md" style={{ marginTop: '20px' }}>
-                <Text>{meal.name}</Text>
-            </Card>
+            <Text>{props.type}</Text>
+            {meals
+            .filter(meal => meal.type === props.type)
+            .map((meal, id) => (
+                <Card key={id} shadow="xs" padding="md" radius="md" style={{ marginTop: '20px' }}>
+                    <Text>{meal.name}</Text>
+                </Card>
             ))}
-            
-            
         </div>
     );
 }

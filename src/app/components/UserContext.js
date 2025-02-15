@@ -7,7 +7,9 @@ const UserContext = createContext(null);
 export function UserProvider({ children }) {
   const { data: session } = useSession();
   const [user, setUser] = useState(null);
-
+  if (!session) {
+    return
+  }
   useEffect(() => {
     if (session.user) {
       setUser(session.user);

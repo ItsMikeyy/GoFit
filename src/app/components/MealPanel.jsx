@@ -18,15 +18,15 @@ const MealPanel = () => {
                 </Tabs.Panel>
 
                 <Tabs.Panel value="lunch">
-                    Messages tab content
+                    <MealList type="lunch" />
                 </Tabs.Panel>
 
                 <Tabs.Panel value="dinner">
-                    Settings tab content
+                    <MealList type="lunch" />
                 </Tabs.Panel>
 
                 <Tabs.Panel value="snacks">
-                    Settings tab content
+                    <MealList type="snacks" />
                 </Tabs.Panel>
             </Tabs>
             <MealModal type="breakfast"/>

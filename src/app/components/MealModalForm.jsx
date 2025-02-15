@@ -45,7 +45,6 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         const postData = calculateMacros();
         fetch("/api/meal", {method: "POST", body: JSON.stringify(postData)});
         console.log(postData);       

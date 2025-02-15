@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import SessionProvider from "@/app/components/SessionProvider";
 import { UserProvider } from "./components/UserContext";
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
+import NavMenu from "./components/NavMenu";
 
 
 const geistSans = Geist({
@@ -33,8 +34,8 @@ export default async function RootLayout({ children }) {
         <MantineProvider>
           <SessionProvider session={session}>
             <UserProvider>
+              <NavMenu />
               {children}
-              {/* <NavMenu /> */}
             </UserProvider>
           </SessionProvider>
         </MantineProvider>
