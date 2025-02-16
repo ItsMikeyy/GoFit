@@ -17,7 +17,6 @@ export const GET = async () => {
         eq(meals.userId, session.user.id),
         eq(meals.date, formatDate(new Date()))
     ))
-    console.log(result)
     return NextResponse.json({ data: result});
 
     

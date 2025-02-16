@@ -1,21 +1,9 @@
-import {
-    NextResponse
-} from "next/server";
-import {
-    authOptions
-} from "../auth/[...nextauth]/route";
-import {
-    db
-} from "@/db";
-import {
-    users
-} from "@/db/schema";
-import {
-    getServerSession
-} from "next-auth";
-import {
-    eq
-} from "drizzle-orm";
+import { NextResponse } from "next/server";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { getServerSession } from "next-auth";
+import { eq } from "drizzle-orm";
 
 
 export async function GET(req) {
