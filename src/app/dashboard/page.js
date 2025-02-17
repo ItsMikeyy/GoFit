@@ -8,13 +8,11 @@ import MealPanel from "../components/MealPanel";
 import Workout from "../components/Workout";
 import { useRouter } from "next/navigation";
 export default function Dashboard() {
-    console.log("render")
     const router = useRouter()
     const { data: session, status, update } = useSession();
     const user = useUser();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        console.log(user)
         if (status === "unauthenticated") {
             router.push("/");
             return
