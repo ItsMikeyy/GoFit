@@ -6,28 +6,41 @@ import { useEffect, useState } from "react";
 import DailySummary from "@/app/components/DailySummary";
 import MealPanel from "../components/MealPanel";
 import Workout from "../components/Workout";
+import { useRouter } from "next/navigation";
 export default function Dashboard() {
+    console.log("render")
+    const router = useRouter()
     const { data: session, status, update } = useSession();
     const user = useUser();
-    console.log(user)
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        console.log("update");
-        update();
+        console.log(user)
         if (status === "unauthenticated") {
-            redirect("/");
+            router.push("/");
+            return
         }
+        
+        const updateSession = async() => {
+            await update();
+            if (!session.user?.id && !user) {
+                router.push("/welcome");
+            }
+            setLoading(false)
+        }
+
+        updateSession();
     },[]);
 
 
 
-    if (!user) {
-        return <p>Loading...</p>
+    if(user?.id) {
+        return (
+            <div>
+                <DailySummary user={user} />
+                <MealPanel />
+                <Workout />
+            </div>
+        );
     }
-    return (
-        <div>
-            <DailySummary user={user} />
-            <MealPanel />
-            <Workout />
-        </div>
-    );
+    
 }

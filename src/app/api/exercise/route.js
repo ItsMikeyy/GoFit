@@ -7,6 +7,55 @@ import { eq, and } from "drizzle-orm";
 import formatDate from "../../(tools)/formatdate";
 
 
+
+export async function GET() {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized", found: false }, { status: 401 });
+    }
+    const date = formatDate(new Date());
+    const wid = await getWorkoutID(session,date);
+    // if (!wid) {
+    //     return NextResponse.json({ message: "Exercise fetch failed", success: false }, { status: 500 });
+    // }
+    const exerciseData = await getExercises(wid,date,session)
+    if (!exerciseData) {
+        return NextResponse.json({ message: "Exercise fetch failed", success: false }, { status: 500 });
+    }
+    return NextResponse.json({data: exerciseData});
+}
+
+const getExercises = async (wid, date, session) => {
+
+    const exerciseData = await db.select().from(exercises).where(eq(exercises.workoutId, wid));
+
+    if (exerciseData.length === 0) {
+        return [];
+    }
+
+    const setsData = await Promise.all(
+        exerciseData.map(async (exercise) => {
+            const sets = await db.select().from(exerciseSets).where(eq(exerciseSets.exerciseId, exercise.id));
+            return { exercise, sets };
+        })
+    );
+    return setsData;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export async function POST(req) {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -19,7 +68,6 @@ export async function POST(req) {
     if (!wid) {
         return NextResponse.json({ message: "Exercise creation failed", success: false }, { status: 500 });
     }
-    console.log(wid);
     if (data.type == "simple") {
         const res = await handleSimpleExercise(data, date, wid)
         if (!res) {
@@ -48,14 +96,12 @@ const handleSimpleExercise = async (data, date, wid) => {
     if (!exerciseResult) {
         return false;
     }
-    console.log(exerciseResult[0].id)
     const exerciseSetsResult = await db.insert(exerciseSets).values({
         exerciseId: exerciseResult[0].id,
         reps: data.reps,
         weight: data.weight,
         setOrder: 0,
     })
-    console.log(exerciseSetsResult)
 
     if (!exerciseSetsResult) {
         return false;
@@ -83,7 +129,6 @@ const handleAdvancedExercise = async (data, date, wid) => {
         const setData = data.sets[i] 
         setInserts.push({setOrder: i + 1,exerciseId: eid, reps: setData.reps, weight: setData.weight})
     }
-    console.log(setInserts)
     const exerciseSetsResult = await db.insert(exerciseSets).values(setInserts);
 
     if (!exerciseSetsResult) {

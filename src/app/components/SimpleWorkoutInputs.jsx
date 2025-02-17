@@ -13,7 +13,8 @@ const SimpleWorkoutInputs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
+        await fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
+        window.location.reload();
     }
 
     const handleTextChange = (e) => {

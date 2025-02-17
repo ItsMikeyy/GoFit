@@ -31,6 +31,8 @@ export const POST = async (req) => {
 
     try {
         const data = await req.json();
+        console.log(data)
+        console.log(session)
         const insertData = {
             userId: session.user.id,
             name: data.name,

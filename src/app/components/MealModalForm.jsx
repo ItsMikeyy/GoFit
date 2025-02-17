@@ -34,10 +34,10 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
     const calculateMacros = () => { 
         const data = {
             ...formData,
-            protein: Math.floor((formData.protein * formData.amount) / formData.servingSize),
-            carbs: Math.floor((formData.carbs * formData.amount) / formData.servingSize),
-            fat: Math.floor((formData.fat * formData.amount) / formData.servingSize),
-            calories: Math.floor(((formData.protein * 4) + (formData.carbs * 4) + (formData.fat * 9)) * formData.amount / formData.servingSize),
+            protein: Math.floor((formData.protein * formData.amount) ),
+            carbs: Math.floor((formData.carbs * formData.amount) ),
+            fat: Math.floor((formData.fat * formData.amount)),
+            calories: ((formData.protein * 4) + (formData.carbs * 4) + (formData.fat * 9)) * formData.amount,
             date: formatDate(new Date())
         };
         return data;
@@ -45,9 +45,11 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
 
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
         const postData = calculateMacros();
-        fetch("/api/meal", {method: "POST", body: JSON.stringify(postData)});
-        console.log(postData);       
+        console.log(postData)
+        const res = await fetch("/api/meal", {method: "POST", body: JSON.stringify(postData)});
+        window.location.reload();
     };
 
     return (

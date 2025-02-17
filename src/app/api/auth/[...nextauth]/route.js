@@ -15,17 +15,18 @@ export const authOptions = {
             return `${baseUrl}/dashboard`;
         },
         async jwt({token, user}) {
-            if(user) {
-                const dbuser = await db.select().from(users).where(eq(users.email, token.email)).limit(1);
-                if(dbuser.length > 0) {
-                    token.user = dbuser[0];
-                    console.log(token, dbuser[0]);
-                }
+            const dbuser = await db.select().from(users).where(eq(users.email, token.email)).limit(1);
+            if(dbuser.length > 0) {
+                token.user = dbuser[0];
+                return token
             }
+        
             return token;
         },
         async session({session, token}) {
-            session.user = token.user;
+            if (token?.user) {
+                session.user = token.user;
+            }            
             return session;
         }
     },
