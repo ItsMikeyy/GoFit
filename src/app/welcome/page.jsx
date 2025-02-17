@@ -56,6 +56,8 @@ const Welcome = () => {
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
     });
+    router.push("/dashboard");
+
   };
 
   return (
