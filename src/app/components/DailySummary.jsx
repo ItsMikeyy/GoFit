@@ -5,8 +5,15 @@ import { useMediaQuery } from "@mantine/hooks";
 import formatDate from "../(tools)/formatdate";
 
 const DailySummary = (props) => {
-    const [nutrition, setNutrition] = useState({});
-    const isSmallScreen = useMediaQuery('(max-width: 768px)'); // Check screen size
+    const [nutrition, setNutrition] = useState({
+        calories: 0,
+        date: formatDate(new Date()),
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        id: -1,
+    });
+    const isSmallScreen = useMediaQuery('(max-width: 768px)'); 
 
     useEffect(() => {
         const fetchNutrition = async () => {
