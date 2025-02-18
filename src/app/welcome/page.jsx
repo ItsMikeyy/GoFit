@@ -74,6 +74,7 @@ const Welcome = () => {
               placeholder="Enter your name"
               value={formData.name}
               onChange={(e) => handleChange("name", e.target.value)}
+              required
             />
 
             <NumberInput
@@ -81,15 +82,18 @@ const Welcome = () => {
               placeholder="Enter your age"
               value={formData.age}
               onChange={(value) => handleChange("age", value)}
+              required
+              min={1} 
             />
 
-            {/* Grouping Weight and Unit Selection */}
             <Group grow>
               <NumberInput
                 label="Weight"
                 placeholder="Enter your weight"
                 value={formData.weight}
                 onChange={(value) => handleChange("weight", value)}
+                required
+                min={1}
               />
               <Select
                 label="Unit"
@@ -97,8 +101,9 @@ const Welcome = () => {
                   { value: "Pounds", label: "Pounds (lbs)" },
                   { value: "Kilograms", label: "Kilograms (kg)" },
                 ]}
-                value={formData.unit}
+                value={formData.unit || "Kilograms"}
                 onChange={(value) => handleChange("unit", value)}
+                required
               />
             </Group>
 
@@ -107,6 +112,8 @@ const Welcome = () => {
               placeholder="Enter your height"
               value={formData.height}
               onChange={(value) => handleChange("height", value)}
+              required
+              min={1}
             />
 
             <Select
@@ -118,6 +125,7 @@ const Welcome = () => {
               ]}
               value={formData.gender}
               onChange={(value) => handleChange("gender", value)}
+              required
             />
 
             <Select
@@ -132,6 +140,7 @@ const Welcome = () => {
               ]}
               value={formData.activity}
               onChange={(value) => handleChange("activity", value)}
+              required
             />
 
             <Select
@@ -146,6 +155,7 @@ const Welcome = () => {
               ]}
               value={formData.goal}
               onChange={(value) => handleChange("goal", value)}
+              required
             />
 
             <Button type="submit" fullWidth>

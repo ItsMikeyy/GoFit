@@ -27,8 +27,6 @@ const Profile = () => {
         updateSession();
     },[]);
 
-
-    console.log(user)
     if(user?.id) {
         return (
             <Container size="xs" pt="xl">

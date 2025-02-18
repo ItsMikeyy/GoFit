@@ -6,18 +6,39 @@ import formatDate from "../(tools)/formatdate";
 
 const DailySummary = (props) => {
     const [nutrition, setNutrition] = useState({});
+    const [loading, setLoading] = useState(true);
     const isSmallScreen = useMediaQuery('(max-width: 768px)'); // Check screen size
 
     useEffect(() => {
+        let retries = 0;
+        const maxRetries = 5; // Stop polling after 5 attempts
+        const interval = 3000; // Try every 3 seconds
+
         const fetchNutrition = async () => {
-            const res = await fetch("/api/nutrition");
-            const data = await res.json();
-            setNutrition(data.nutrition);
+            try {
+                const res = await fetch("/api/nutrition");
+                const data = await res.json();
+                
+                if (data.nutrition) {
+                    setNutrition(data.nutrition);
+                    setLoading(false);
+                } else if (retries < maxRetries) {
+                    retries++;
+                    setTimeout(fetchNutrition, interval); // Retry
+                } else {
+                    setLoading(false); // Stop trying after max retries
+                }
+            } catch (error) {
+                console.error("Error fetching nutrition:", error);
+                setLoading(false);
+            }
         };
+
         fetchNutrition();
     }, []);
 
-    if (!nutrition) return <p>Loading...</p>;
+    if (loading) return <p>Loading...</p>;
+    if (!nutrition) return <p>Something went wrong..</p>;
 
     const proteinPercent = (nutrition.protein / props.user.goalProtein) * 100;
     const carbsPercent = (nutrition.carbs / props.user.goalCarbs) * 100;
