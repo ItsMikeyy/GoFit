@@ -17,7 +17,6 @@ const DailySummary = (props) => {
         fetchNutrition();
     }, []);
 
-    if (!nutrition) return <p>Loading...</p>;
 
     const proteinPercent = (nutrition.protein / props.user.goalProtein) * 100;
     const carbsPercent = (nutrition.carbs / props.user.goalCarbs) * 100;
@@ -30,17 +29,15 @@ const DailySummary = (props) => {
     return (
         <Card shadow="xs" padding="md" radius="md">
             <Flex direction="column" gap="xl">
-                {/* Header */}
                 <Flex justify="space-between" align="center" wrap="wrap">
                     <Text size="xl">Daily Summary</Text>
                     <Text size="md">Date: {formatDate(new Date())}</Text>
                 </Flex>
 
-                {/* RingProgress moves ABOVE the progress bars on small screens */}
                 {isSmallScreen && (
                     <Flex justify="center">
                         <RingProgress 
-                            size={180} // Larger size when above
+                            size={180} 
                             thickness={12}
                             label={<Text fw={700} ta="center" size="md">{nutrition.calories} / {props.user.goalCalories} Calories</Text>} 
                             sections={[
@@ -52,18 +49,16 @@ const DailySummary = (props) => {
                     </Flex>
                 )}
 
-                {/* Layout changes based on screen size */}
                 <Flex 
                     direction={isSmallScreen ? "column" : "row"} 
                     align="center" 
                     gap="xl"
                     justify="center"
                 >
-                    {/* RingProgress stays BESIDE progress bars on large screens */}
                     {!isSmallScreen && (
                         <Flex justify="center">
                             <RingProgress 
-                                size={150} // Default size for larger screens
+                                size={150} 
                                 label={<Text fw={700} ta="center" size="sm">{nutrition.calories} / {props.user.goalCalories} Calories</Text>} 
                                 sections={[
                                     { value: proteinCaloriesPercentage, color: 'red' },
@@ -74,7 +69,6 @@ const DailySummary = (props) => {
                         </Flex>
                     )}
 
-                    {/* Progress bars */}
                     <Grid gutter="md" style={{ flex: 1 }}>
                         <Grid.Col xs={12}>
                             <Box padding="sm">
