@@ -10,7 +10,12 @@ import {
 export default function NavBar() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [opened, setOpened] = useState(false);
+  const [open, setOpen] = useState(false);
+  
+  const handleNavigation = (path) => {
+    setOpen(false); 
+    setTimeout(() => router.push(path), 300); 
+  };
 
   return (
     <Box p="md"
@@ -20,15 +25,24 @@ export default function NavBar() {
         justifyContent: "space-between"
       }}
     >
-    <Text size="xl" weight={700}  style={{ cursor: "pointer", color: "#228be6", fontWeight: "bold" }} onClick={() => router.push("/")}>
+      <Text 
+        size="xl" 
+        weight={700}  
+        style={{ cursor: "pointer", color: "#228be6", fontWeight: "bold" }} 
+        onClick={() => router.push("/")}
+      >
         GoFit
-    </Text>
-      <Container size="md" style={{
-        display: "flex",
-        justifyContent: "flex-end", 
-        width: "100%",
-        margin: "0"
-      }}>
+      </Text>
+
+      <Container 
+        size="md" 
+        style={{
+          display: "flex",
+          justifyContent: "flex-end", 
+          width: "100%",
+          margin: "0"
+        }}
+      >
         <Group gap="xl" visibleFrom="sm">
           <Button variant="subtle" onClick={() => router.push("/")}>Home</Button>
           {session && <Button variant="subtle" onClick={() => router.push("/dashboard")}>Dashboard</Button>}
@@ -40,17 +54,28 @@ export default function NavBar() {
           ) : <Button variant="subtle" onClick={() => signIn()}>Sign In</Button>}
         </Group>
 
-        <Burger opened={opened} onClick={() => setOpened(!opened)} hiddenFrom="sm" />
+        <Burger style={{ paddingRight: '20px' }} opened={open} onClick={() => setOpen(!open)} hiddenFrom="sm" />
 
-        <Drawer opened={opened} onClose={() => setOpened(false)} padding="md" title="Menu">
-          <Button fullWidth variant="subtle" onClick={() => router.push("/")}>Home</Button>
-          <Button fullWidth variant="subtle" onClick={() => router.push("/dashboard")}>Dashboard</Button>
+        <Drawer 
+        opened={open} 
+        onClose={() => setOpen(false)} 
+        padding="md" 
+        title="Menu"
+        styles={{
+          header: {
+            paddingRight: "20px"
+          },
+        }}
+      >
+          <Button fullWidth variant="subtle" onClick={() => handleNavigation("/")}>Home</Button>
           {session && (
             <>
-              <Button fullWidth variant="subtle" onClick={() => router.push("/profile")}>Profile</Button>
-              <Button fullWidth color="red" onClick={() => signOut()}>Sign Out</Button>
+              <Button fullWidth variant="subtle" onClick={() => handleNavigation("/dashboard")}>Dashboard</Button>
+              <Button fullWidth variant="subtle" onClick={() => handleNavigation("/profile")}>Profile</Button>
+              <Button fullWidth color="red" onClick={() => { setOpen(false); signOut(); }}>Sign Out</Button>
             </>
           )}
+          {!session && <Button fullWidth variant="subtle" onClick={() => handleNavigation("/signin")}>Sign In</Button>}
         </Drawer>
       </Container>
     </Box>
