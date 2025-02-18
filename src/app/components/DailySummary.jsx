@@ -5,15 +5,8 @@ import { useMediaQuery } from "@mantine/hooks";
 import formatDate from "../(tools)/formatdate";
 
 const DailySummary = (props) => {
-    const [nutrition, setNutrition] = useState({
-        calories: 0,
-        date: formatDate(new Date()),
-        protein: 0,
-        carbs: 0,
-        fat: 0,
-        id: -1,
-    });
-    const isSmallScreen = useMediaQuery('(max-width: 768px)'); 
+    const [nutrition, setNutrition] = useState({});
+    const isSmallScreen = useMediaQuery('(max-width: 768px)'); // Check screen size
 
     useEffect(() => {
         const fetchNutrition = async () => {
@@ -24,6 +17,7 @@ const DailySummary = (props) => {
         fetchNutrition();
     }, []);
 
+    if (!nutrition) return <p>Loading...</p>;
 
     const proteinPercent = (nutrition.protein / props.user.goalProtein) * 100;
     const carbsPercent = (nutrition.carbs / props.user.goalCarbs) * 100;
@@ -76,6 +70,7 @@ const DailySummary = (props) => {
                         </Flex>
                     )}
 
+                    {/* Progress bars */}
                     <Grid gutter="md" style={{ flex: 1 }}>
                         <Grid.Col xs={12}>
                             <Box padding="sm">
