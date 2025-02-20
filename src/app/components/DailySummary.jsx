@@ -7,16 +7,17 @@ import formatDate from "../(tools)/formatdate";
 const DailySummary = (props) => {
     const [nutrition, setNutrition] = useState({});
     const [loading, setLoading] = useState(true);
-    const isSmallScreen = useMediaQuery('(max-width: 768px)'); // Check screen size
+    const isSmallScreen = useMediaQuery('(max-width: 768px)'); 
 
     useEffect(() => {
         let retries = 0;
-        const maxRetries = 5; // Stop polling after 5 attempts
-        const interval = 3000; // Try every 3 seconds
+        const maxRetries = 5; 
+        const interval = 3000; 
 
         const fetchNutrition = async () => {
             try {
-                const res = await fetch("/api/nutrition");
+                const date = formatDate(new Date())
+                const res = await fetch(`/api/nutrition?date=${date}`);
                 const data = await res.json();
                 
                 if (data.nutrition) {
@@ -24,9 +25,9 @@ const DailySummary = (props) => {
                     setLoading(false);
                 } else if (retries < maxRetries) {
                     retries++;
-                    setTimeout(fetchNutrition, interval); // Retry
+                    setTimeout(fetchNutrition, interval); 
                 } else {
-                    setLoading(false); // Stop trying after max retries
+                    setLoading(false); 
                 }
             } catch (error) {
                 console.error("Error fetching nutrition:", error);
@@ -91,7 +92,6 @@ const DailySummary = (props) => {
                         </Flex>
                     )}
 
-                    {/* Progress bars */}
                     <Grid gutter="md" style={{ flex: 1 }}>
                         <Grid.Col xs={12}>
                             <Box padding="sm">

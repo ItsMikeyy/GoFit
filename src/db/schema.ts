@@ -71,6 +71,7 @@ export const meals = sqliteTable("meals", {
   userId: integer("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  nutritionId: integer("nutrition_id").notNull().references(() => nutritionLogs.id, {onDelete: "cascade"}),
   name: text("name").notNull(),
   type: text("type").notNull(), 
   amount: real("amount").notNull(), 
@@ -80,6 +81,7 @@ export const meals = sqliteTable("meals", {
   carbs: real("carbs").notNull(),
   fat: real("fat").notNull(),
   date: text("date").notNull(), 
+
 });
 
 export type InsertUser = typeof users.$inferInsert;

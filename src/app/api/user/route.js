@@ -9,25 +9,19 @@ import { eq } from "drizzle-orm";
 export async function GET(req) {
     const session = await getServerSession(authOptions);
     if (!session) {
-        return NextResponse.json({
-            error: "Unauthorized",
-            found: false
-        }, {
-            status: 401
-        });
+        return NextResponse.json({error: "Unauthorized", found: false}, { status: 401 });
     }
-    const user = await db.select().from(users).where(eq(users.email, session.user.email)).limit(1);
-    if (user.length > 0) {
-        return NextResponse.json({
-            user: user[0],
-            found: true
-        });
+    try {
+        const user = await db.select().from(users).where(eq(users.email, session.user.email)).limit(1);
+        if (user.length > 0) {
+            return NextResponse.json({user: user[0], found: true}, { status: 200 });
+        }
+        return NextResponse.json({user: null, found: false, message: "User not found"}, {status: 500});
+    } catch(e) {
+        return NextResponse.json({user: null, found: false, message: "Error fetching user"}, {status: 500});
     }
-
-    return NextResponse.json({
-        user: null,
-        found: false
-    });
+    
+    
 }
 
 export async function POST(req) {
@@ -83,7 +77,7 @@ export async function POST(req) {
             return NextResponse.json({ message: "User creation failed", success: false }, { status: 500 });
         }
 
-    } catch (error) {  // <-- This should work fine
+    } catch (error) {  
         console.error("Error inserting user:", error);
         return NextResponse.json(
             { message: "Internal Server Error", success: false },
@@ -94,4 +88,8 @@ export async function POST(req) {
 
 const convertToKg = (weight) => {
     return (weight * 0.453592).toFixed(2);
+}
+
+const convertToCm = (height) => {
+    return (height * 0.453592).toFixed(2);
 }

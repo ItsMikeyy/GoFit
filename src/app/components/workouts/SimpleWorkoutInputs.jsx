@@ -11,10 +11,21 @@ const SimpleWorkoutInputs = () => {
         type: "simple"
     });
 
+    const [error, setError] = useState("");
+    const [clicked, setClicked] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
-        window.location.reload();
+        setClicked(true);
+        const res = await fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
+        if (res.ok) {
+            window.location.reload()
+            setError("");
+        } else {
+            const data = await res.json()
+            setError(data.message);
+            setClicked(false);
+        }
     }
 
     const handleTextChange = (e) => {
@@ -52,7 +63,8 @@ const SimpleWorkoutInputs = () => {
            
             <NumberInput label="Reps" placeholder="Enter reps" required mt="sm" name="reps" onChange={(value) => handleChange('reps', value)} />
             <NumberInput label="Sets" placeholder="Enter sets" required mt="sm" name="sets" onChange={(value) => handleChange('sets', value)}  />
-            <Button type="submit" fullWidth mt="md">Add Workout</Button>
+            {!clicked ? <Button type="submit" fullWidth mt="md">Submit</Button> : <Button disabled type="submit" fullWidth mt="md">Submit</Button>}
+            {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
         </form>
     )
 }

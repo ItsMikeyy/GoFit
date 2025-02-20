@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { Card, Text, Group, Badge } from "@mantine/core";
+import formatDate from "@/app/(tools)/formatdate";
 const ExerciseList = () => {
     const [exercises, setExercies] = useState([])
     const [expand, setExpand] = useState(null);
     useEffect(()=> {
         const fetchWorkoutData = async () => {
-            const res = await fetch("/api/exercise");
+            const date = formatDate(new Date())
+            const res = await fetch(`/api/exercise?date=${date}`);
             const exerciseData = await res.json();
 
             setExercies(exerciseData.data);

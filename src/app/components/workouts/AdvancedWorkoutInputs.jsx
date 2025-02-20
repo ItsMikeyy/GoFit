@@ -8,6 +8,10 @@ const AdvancedWorkoutInputs = () => {
         unit: "",
         type: "advanced"
     })
+
+    const [error, setError] = useState("");
+    const [clicked, setClicked] = useState(false);
+
     const addSet = () => {
         setFormData(prevState => ({
             ...prevState,
@@ -47,8 +51,17 @@ const AdvancedWorkoutInputs = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
-        window.location.reload()
+        setClicked(true);
+        const res = await fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
+        if (res.ok) {
+            window.location.reload()
+            setError("");
+        } else {
+            const data = await res.json()
+            setError(data.message);
+            setClicked(false);
+        }
+        
     }
 
     return (
@@ -83,7 +96,8 @@ const AdvancedWorkoutInputs = () => {
             </div>
             ))}
             <Button mt="sm" onClick={addSet}>+ Add Set</Button>
-            <Button type="submit" fullWidth mt="md">Submit</Button>
+            {!clicked ? <Button type="submit" fullWidth mt="md">Submit</Button> : <Button disabled type="submit" fullWidth mt="md">Submit</Button>}
+            {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
         </form>
     );
 }

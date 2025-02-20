@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, TextInput, NumberInput, Box } from "@mantine/core";
-import { useUser } from "./UserContext";
-import formatDate from "../(tools)/formatdate";
+import formatDate from "@/app/(tools)/formatdate";
 const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
     let [formData, setFormData] = useState({
         name: '',
@@ -13,7 +12,8 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
         fat: '',
         "type": type
     });
-    const user = useUser();
+    const [error, setError] = useState("");
+    const [clicked, setClicked] = useState(false);
 
     
     const handleChange = (e) => {
@@ -47,8 +47,16 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const postData = calculateMacros();
-        console.log(postData)
+        setClicked(true);
         const res = await fetch("/api/meal", {method: "POST", body: JSON.stringify(postData)});
+        if (res.ok) {
+            window.location.reload()
+            setError("");
+        } else {
+            const data = await res.json()
+            setError(data.message);
+            setClicked(false);
+        }
         window.location.reload();
     };
 
@@ -98,7 +106,8 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
             />
             
             <Box mt="md" style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button type="submit">Submit</Button>
+                {!clicked ? <Button type="submit" fullWidth mt="md">Add Meal</Button> : <Button disabled type="submit" fullWidth mt="md">Submit</Button>}
+                {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
             </Box>
         </form>
     );

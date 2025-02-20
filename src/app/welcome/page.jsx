@@ -15,32 +15,43 @@ import {
   Container,
   Group,
 } from "@mantine/core";
-
 const Welcome = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const user = useUser();
+
+
   useEffect(() => {
     if (!session) {
       router.push("/");
       return
-    }
+    }      
+    update()
+
+
     if (user?.id) {
-      router.push("/dashboard");
-      return
+      console.log("here")
+        router.push("/dashboard");
     }
-  }, [user, session]);
+    
+    
+  }, []);
+
+
 
   const [formData, setFormData] = useState({
     name: "",
     age: "",
     weight: "",
-    unit: "Pounds", // Default to Pounds
+    unit: "Pounds", 
     height: "",
     gender: "",
     activity: "",
     goal: "",
   });
+
+  const [error, setError] = useState("");
+  const [clicked, setClicked] = useState(false);
 
   const handleChange = (field, value) => {
     setFormData((prevState) => ({
@@ -51,12 +62,21 @@ const Welcome = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch("/api/user", {
+    const res = await fetch("/api/user", {
       method: "POST",
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
     });
-    router.push("/dashboard");
+
+    if (res.ok) {
+      router.push("/dashboard");
+      setError("");
+  } else {
+      const data = await res.json()
+      setError(data.message);
+      setClicked(false);
+  }
+    
 
   };
 
@@ -158,9 +178,8 @@ const Welcome = () => {
               required
             />
 
-            <Button type="submit" fullWidth>
-              Submit
-            </Button>
+          {!clicked ? <Button type="submit" fullWidth mt="md">Create Account!</Button> : <Button disabled type="submit" fullWidth mt="md">Create Account!</Button>}
+          {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
           </Stack>
         </form>
       </Card>

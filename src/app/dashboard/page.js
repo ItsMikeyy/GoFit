@@ -1,11 +1,10 @@
 "use client";
 import { useUser } from "@/app/components/UserContext";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/dist/server/api-utils";
-import { useEffect, useState } from "react";
+import { Title, Button, Container } from "@mantine/core";import { useEffect, useState } from "react";
 import DailySummary from "@/app/components/DailySummary";
-import MealPanel from "../components/MealPanel";
-import Workout from "../components/Workout";
+import MealPanel from "../components/meals/MealPanel";
+import Workout from "../components/workouts/Workout";
 import { useRouter } from "next/navigation";
 export default function Dashboard() {
     const router = useRouter()
@@ -17,20 +16,29 @@ export default function Dashboard() {
             router.push("/");
             return
         }
-        
-        const updateSession = async() => {
-            await update();
-            if (!session.user?.id && !user) {
-                router.push("/welcome");
-            }
-            setLoading(false)
-        }
+        update()
 
-        updateSession();
+        // const updateSession = async() => {
+        //     if (!session.user?.id && !user) {
+        //         router.push("/welcome");
+        //     }
+        //     setLoading(false)
+        // }
+
+        // updateSession();
     },[]);
 
 
-
+    if (!user?.id) {
+        return (
+            <Container>
+              <Title order={2} align="center" mb="md">
+                Please fill out the form!
+              </Title>
+              <Button fullWidth>Form</Button>
+            </Container>
+        );
+    }
     if(user?.id) {
         return (
             <div>

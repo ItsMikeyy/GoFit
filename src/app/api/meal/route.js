@@ -6,35 +6,48 @@ import { meals, nutritionLogs } from "@/db/schema";
 import { sql, eq, and } from "drizzle-orm";
 import formatDate from "@/app/(tools)/formatdate";
 
-export const GET = async () => {
+export const GET = async (req) => {
     const session = await getServerSession(authOptions);
-
+    
     if (!session) {
         return NextResponse.json({ error: "Unauthorized", found: false }, { status: 401 });
     }
-    
-    const result = await db.select().from(meals).where(and(
-        eq(meals.userId, session.user.id),
-        eq(meals.date, formatDate(new Date()))
-    ))
-    return NextResponse.json({ data: result});
-
-    
+    try {
+        const {searchParams} = new URL(req.url);
+        const date = searchParams.get("date") ?? formatDate(new Date());
+        const result = await db.select().from(meals).where(and(
+            eq(meals.userId, session.user.id),
+            eq(meals.date, date)
+        ))
+        if (!result) {
+            return NextResponse.json({ error: "Error fetching exercise", found: false }, { status: 500 });
+        }
+        return NextResponse.json({ data: result});
+    } catch (e) {
+        console.log(e)
+        return NextResponse.json({ error: "Error fetching exercise", found: false }, { status: 500 });
+    }
 }
 
 export const POST = async (req) => {
     const session = await getServerSession(authOptions);
 
     if (!session) {
-        return NextResponse.json({ error: "Unauthorized", found: false }, { status: 401 });
+        return NextResponse.json({ message: "Unauthorized", found: false }, { status: 401 });
     }
 
     try {
         const data = await req.json();
-        console.log(data)
-        console.log(session)
+        console.log("HERE")
+
+        const nid = await db.select().from(nutritionLogs).where(and(eq(nutritionLogs.date, data.date),eq(nutritionLogs.userId, session.user.id)));
+        
+        if(!nid) {
+            return NextResponse.json({ message: "Failed to add meal", success: false }, { status: 500 });
+        } 
         const insertData = {
             userId: session.user.id,
+            nutritionId: nid[0].id,
             name: data.name,
             type: data.type,
             amount: data.amount,

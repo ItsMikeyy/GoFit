@@ -4,13 +4,15 @@ import { Card, Text, Button, Modal } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks";
 import WorkoutForm from "./WorkoutForm";
 import ExerciseList from "./ExerciseList";
+import formatDate from "@/app/(tools)/formatdate";
 
 const Workout = () => {
     const [opened, { open, close }] = useDisclosure(false);
     
     useEffect(() => {
         const fetchWorkout = async () => {
-            await fetch("/api/workout")
+            const date = formatDate(new Date())
+            await fetch(`/api/workout?date=${date}`)
         }
         fetchWorkout()
 
