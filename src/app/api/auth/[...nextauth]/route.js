@@ -12,23 +12,28 @@ export const authOptions = {
     ],
     callbacks: {
         async redirect({url, baseUrl}) {
-            return `${baseUrl}/dashboard`;
+            return `${baseUrl}/welcome`;
         },
-        async jwt({token, user}) {
-            const dbuser = await db.select().from(users).where(eq(users.email, token.email)).limit(1);
-            if(dbuser.length > 0) {
-                token.user = dbuser[0];
-                return token
+ 
+        async jwt({ token, user }) {
+        console.log("user", user)
+        console.log("token", token)
+        if (user) {
+            const dbUser = await db.select().from(users).where(eq(users.email, token.email));
+                console.log("user", dbUser)
+                if (dbUser.length > 0) {
+                    token.user = dbUser[0];              
+                }
             }
-        
-            return token;
+        return token;
         },
-        async session({session, token}) {
-            if (token?.user) {
-                session.user = token.user;
-            }            
+
+        async session({ session, token  }) {
+            if (token.user) {
+                session.user.dbUser = token.user;
+            }
             return session;
-        }
+          },
     },
     session: {
         jwt: true,

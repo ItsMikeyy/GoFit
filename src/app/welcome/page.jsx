@@ -67,8 +67,10 @@ const Welcome = () => {
       body: JSON.stringify(formData),
       headers: { "Content-Type": "application/json" },
     });
+    
 
     if (res.ok) {
+      await update({ onboardingCompleted: 1 });
       router.push("/dashboard");
       setError("");
   } else {

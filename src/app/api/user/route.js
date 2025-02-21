@@ -69,6 +69,7 @@ export async function POST(req) {
         console.log(user_data);
         const result = await db.insert(users).values({
             ...user_data,
+            onboardingCompleted: 1,
             email: session.user.email,
         }).execute();
         if (result) {
