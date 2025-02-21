@@ -19,8 +19,9 @@ export async function GET(req) {
         const date = searchParams.get("date") ?? formatDate(new Date());
 
         const wid = await getWorkoutID(session,date);
+        console.log(wid)
         if (!wid) {
-            return NextResponse.json({ message: "Exercise fetch failed", success: false }, { status: 500 });
+            return NextResponse.json({ message: "Exercise fetch failed no wid", success: false }, { status: 500 });
         }
         const exerciseData = await getExercises(wid,date,session)
         if (!exerciseData) {
@@ -28,6 +29,7 @@ export async function GET(req) {
         }
         return NextResponse.json({data: exerciseData});
     } catch(e) {
+        console.log(e)
         return NextResponse.json({ message: "Exercise fetch failed", success: false }, { status: 500 });
     }
    
@@ -121,7 +123,7 @@ const handleAdvancedExercise = async (data, date, wid) => {
 }
 
 const getWorkoutID = async (session, date) => {
-    const workout = await db.select().from(workouts).where(and(eq(session.user.id, workouts.userId), eq(date, workouts.date)))
+    const workout = await db.select().from(workouts).where(and(eq(session.user.dbUser.id, workouts.userId), eq(date, workouts.date)))
     if (workout.length > 0) {
         return workout[0].id;
     }

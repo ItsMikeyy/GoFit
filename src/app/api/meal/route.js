@@ -16,7 +16,7 @@ export const GET = async (req) => {
         const {searchParams} = new URL(req.url);
         const date = searchParams.get("date") ?? formatDate(new Date());
         const result = await db.select().from(meals).where(and(
-            eq(meals.userId, session.user.id),
+            eq(meals.userId, session.user.dbUser.id),
             eq(meals.date, date)
         ))
         if (!result) {
@@ -40,13 +40,13 @@ export const POST = async (req) => {
         const data = await req.json();
         console.log("HERE")
 
-        const nid = await db.select().from(nutritionLogs).where(and(eq(nutritionLogs.date, data.date),eq(nutritionLogs.userId, session.user.id)));
+        const nid = await db.select().from(nutritionLogs).where(and(eq(nutritionLogs.date, data.date),eq(nutritionLogs.userId, session.user.dbUser.id)));
         
         if(!nid) {
             return NextResponse.json({ message: "Failed to add meal", success: false }, { status: 500 });
         } 
         const insertData = {
-            userId: session.user.id,
+            userId: session.user.dbUser.id,
             nutritionId: nid[0].id,
             name: data.name,
             type: data.type,
@@ -73,7 +73,7 @@ export const POST = async (req) => {
             })
             .where(
             and(
-                eq(nutritionLogs.userId, session.user.id),
+                eq(nutritionLogs.userId, session.user.dbUser.id),
                 eq(nutritionLogs.date, data.date)
             )
             )

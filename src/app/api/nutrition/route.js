@@ -7,7 +7,7 @@ import { nutritionLogs } from "@/db/schema";
 import formatDate from "@/app/(tools)/formatdate";
 export const GET = async (req, res) => {
     const session = await getServerSession(authOptions);
-    
+    console.log("nutrition", session)
     if(!session) {
         return NextResponse.json({ error: "Unauthorized", found: false }, { status: 401 });
     }
@@ -16,11 +16,10 @@ export const GET = async (req, res) => {
         
         const {searchParams} = new URL(req.url);
         const date = searchParams.get("date") ?? formatDate(new Date());
-        console.log(date)
-        const nutritionData = await db.select().from(nutritionLogs).where(and(eq(nutritionLogs.userId, session.user.id), eq(nutritionLogs.date, date))).limit(1);
+        const nutritionData = await db.select().from(nutritionLogs).where(and(eq(nutritionLogs.userId, session.user.dbUser.id), eq(nutritionLogs.date, date))).limit(1);
         if(nutritionData.length === 0) {
             const data = {
-                userId: session.user.id,
+                userId: session.user.dbUser.id,
                 protein: 0,
                 carbs: 0,
                 fat: 0,
@@ -28,6 +27,7 @@ export const GET = async (req, res) => {
                 date: date,
             }
             const result = await db.insert(nutritionLogs).values(data).execute();
+            
             if (result) {
                 return NextResponse.json({ message: "Nutrition Log created successfully", nutrition: nutritionLogs[0], success: true });
             } else {

@@ -9,7 +9,7 @@ const ExerciseList = () => {
             const date = formatDate(new Date())
             const res = await fetch(`/api/exercise?date=${date}`);
             const exerciseData = await res.json();
-
+            console.log(exerciseData)
             setExercies(exerciseData.data);
         }
 
