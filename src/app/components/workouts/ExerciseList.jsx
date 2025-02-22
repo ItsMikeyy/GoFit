@@ -4,17 +4,55 @@ import formatDate from "@/app/(tools)/formatdate";
 const ExerciseList = () => {
     const [exercises, setExercies] = useState([])
     const [expand, setExpand] = useState(null);
-    useEffect(()=> {
-        const fetchWorkoutData = async () => {
-            const date = formatDate(new Date())
-            const res = await fetch(`/api/exercise?date=${date}`);
-            const exerciseData = await res.json();
-            console.log(exerciseData)
-            setExercies(exerciseData.data);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [attempts, setAttempts] = useState(0);  
+    
+    useEffect(() => {
+      let intervalId;
+  
+      const fetchWorkoutLog = async () => {
+        try {
+          const date = formatDate(new Date())
+          const res = await fetch(`/api/exercise?date=${date}`);
+          if (!res.ok) throw new Error("Failed to fetch workout log");
+  
+          const data = await res.json();
+  
+          if (data.data) {
+            setExercies(data.data)
+            setLoading(false);
+            clearInterval(intervalId); // Stop polling once log is found
+          } else {
+            throw new Error("No workout log found yet");
+          }
+        } catch (err) {
+          setAttempts((prev) => prev + 1);
+  
+          if (attempts >= 4) {
+            setError("Failed to load workout log. Please try again later.");
+            setLoading(false);
+            clearInterval(intervalId); // Stop polling after 5 attempts
+          }
         }
+      };
+      fetchWorkoutLog(); // Initial call
+    intervalId = setInterval(fetchWorkoutLog, 3000); // Poll every 3 seconds
 
-        fetchWorkoutData();
-    }, []);
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, [attempts]); // Depend on `attempts` to stop when limit is reached
+    
+    // useEffect(()=> {
+    //     const fetchWorkoutData = async () => {
+            
+            
+    //         const exerciseData = await res.json();
+    //         console.log(exerciseData)
+    //         setExercies(exerciseData.data);
+    //     }
+
+    //     fetchWorkoutData();
+    // }, []);
 
     const handleExpand = (id) => {
         setExpand(expand === id ? null : id);
