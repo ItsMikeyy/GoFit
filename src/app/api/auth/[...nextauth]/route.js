@@ -16,11 +16,10 @@ export const authOptions = {
         },
  
         async jwt({ token, user }) {
-        console.log("user", user)
-        console.log("token", token)
+
         if (user) {
+            
             const dbUser = await db.select().from(users).where(eq(users.email, token.email));
-                console.log("user", dbUser)
                 if (dbUser.length > 0) {
                     token.user = dbUser[0];              
                 }
@@ -29,6 +28,14 @@ export const authOptions = {
         },
 
         async session({ session, token  }) {
+            if (!token?.user) {
+                console.log("fetch")
+                const dbUser = await db.select().from(users).where(eq(users.email, token.email));
+                if (dbUser.length > 0) {
+                    token.user = dbUser[0];
+                    session.user.dbUser = dbUser[0];              
+                }
+            }
             if (token.user) {
                 session.user.dbUser = token.user;
             }

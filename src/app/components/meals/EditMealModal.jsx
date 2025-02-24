@@ -8,16 +8,11 @@ const EditMealModal = (props) => {
     const {meal} = props
    
     let [formData, setFormData] = useState({
-        name: meal.name,
-        amount: meal.amount,
-        servingSize: meal.servingSize,
-        protein: meal.protein,
-        carbs: meal.carbs,
-        fat: meal.fat,
-        "type": meal.type
+        ...meal
     });
     const [error, setError] = useState("");
     const [clicked, setClicked] = useState(false);
+    const [action, setAction] = useState("")
 
     
     const handleChange = (e) => {
@@ -50,9 +45,22 @@ const EditMealModal = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const postData = calculateMacros();
         setClicked(true);
-        const res = await fetch("/api/meal", {method: "POST", body: JSON.stringify(postData)});
+        let res;
+        const macroData = calculateMacros();
+        if (action === "edit") {
+            console.log("Editing meal...");
+            console.log("FETCh")
+            res = await fetch("/api/meal", {method: "PATCH",
+                body: JSON.stringify(macroData),
+            })
+
+        } else if (action === "delete") {
+            console.log("Deleting meal...");
+            res = await fetch("/api/meal", {method: "DELETE",
+                body: JSON.stringify(macroData),
+            })
+        }
         if (res.ok) {
             window.location.reload()
             setError("");
@@ -91,6 +99,7 @@ const EditMealModal = (props) => {
                 <NumberInput
                     label="Protein (g)"
                     name="protein"
+                    placeholder={Math.floor(formData.protein / formData.amount)}
                     value={formData.protein}
                     onChange={(value) => handleNumberChange('protein', value)}
                     required
@@ -98,6 +107,7 @@ const EditMealModal = (props) => {
                 <NumberInput
                     label="Carbs (g)"
                     name="carbs"
+                    placeholder={Math.floor(formData.carbs / formData.amount)}
                     value={formData.carbs}
                     onChange={(value) => handleNumberChange('carbs', value)}
                     required
@@ -105,14 +115,15 @@ const EditMealModal = (props) => {
                 <NumberInput
                     label="Fat (g)"
                     name="fat"
+                    placeholder={Math.floor(formData.fat / formData.amount)}
                     value={formData.fat}
                     onChange={(value) => handleNumberChange('fat', value)}
                     required
                 />
                 
                 <Box mt="md" style={{ display: 'flex', justifyContent: 'center' }}>
-                    {!clicked ? <Button style={{margin: "10px"}} type="submit" fullWidth mt="md">Edit Meal</Button> : <Button disabled style={{margin: "10px"}} type="submit" fullWidth mt="md">Edit Meal</Button>}
-                    {!clicked ? <Button fullWidth style={{margin: "10px"}} color="red" mt="md">Delete Meal</Button> : <Button disabled color="red" style={{margin: "10px"}} type="submit" fullWidth mt="md">Delete Meal</Button>}
+                    {!clicked ? <Button style={{margin: "10px"}} type="submit" onClick={() => setAction("edit")}fullWidth mt="md">Edit Meal</Button> : <Button disabled name="action" value="edit" style={{margin: "10px"}} type="submit" fullWidth mt="md">Edit Meal</Button>}
+                    {!clicked ? <Button fullWidth style={{margin: "10px"}} type="submit" color="red" onClick={() => setAction("delete")} mt="md">Delete Meal</Button> : <Button disabled name="action" value="delete" color="red" style={{margin: "10px"}} type="submit" fullWidth mt="md">Delete Meal</Button>}
                     {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
                 </Box>
             </form>

@@ -20,7 +20,7 @@ export async function GET(req) {
 
         const wid = await getWorkoutID(session,date);
         if (!wid) {
-            return NextResponse.json({ message: "Exercise fetch failed", success: false }, { status: 500 });
+            return NextResponse.json({ message: "Exercise fetch failed no wid", success: false }, { status: 500 });
         }
         const exerciseData = await getExercises(wid,date,session)
         if (!exerciseData) {
@@ -121,7 +121,7 @@ const handleAdvancedExercise = async (data, date, wid) => {
 }
 
 const getWorkoutID = async (session, date) => {
-    const workout = await db.select().from(workouts).where(and(eq(session.user.id, workouts.userId), eq(date, workouts.date)))
+    const workout = await db.select().from(workouts).where(and(eq(session.user.dbUser.id, workouts.userId), eq(date, workouts.date)))
     if (workout.length > 0) {
         return workout[0].id;
     }

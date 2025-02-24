@@ -14,11 +14,11 @@ export async function GET(req) {
         const {searchParams} = new URL(req.url);
         const date = searchParams.get("date") ?? formatDate(new Date());
 
-        const userWorkouts = await db.select().from(workouts).where(and(eq(session.user.id, workouts.userId), eq(date, workouts.date))).limit(1);
+        const userWorkouts = await db.select().from(workouts).where(and(eq(session.user.dbUser.id, workouts.userId), eq(date, workouts.date))).limit(1);
         if (userWorkouts.length > 0) {
             return NextResponse.json({ workout: userWorkouts[0] });
         }
-        const result = await db.insert(workouts).values({userId: session.user.id, date: date}).execute();
+        const result = await db.insert(workouts).values({userId: session.user.dbUser.id, date: date}).execute();
         console.log(result);
         if (result) {
             return NextResponse.json({ message: "Workout created successfully", workouts: userWorkouts[0], success: true });

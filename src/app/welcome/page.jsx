@@ -68,7 +68,7 @@ const Welcome = () => {
       headers: { "Content-Type": "application/json" },
     });
     
-
+    console.log(res);
     if (res.ok) {
       await update({ onboardingCompleted: 1 });
       router.push("/dashboard");

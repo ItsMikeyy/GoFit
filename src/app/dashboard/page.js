@@ -9,44 +9,39 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
     const router = useRouter()
     const { data: session, status, update } = useSession();
-    const user = useUser();
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/");
-            return
+    const [dbUser, setDbUser] = useState(session?.user?.dbUser)
+
+  const [fetched, setFetched] = useState(false); 
+
+  useEffect(() => {
+      const fetchUser = async () => {
+        if (!session.user.dbUser && !fetched) {
+          setFetched(true); 
+          const updatedSession = await update();   
+          setDbUser(updatedSession?.user?.dbUser); 
+        
         }
-        update()
+      };
+      console.log("Call")
+      fetchUser();
+    }, [update, fetched]);
 
-        // const updateSession = async() => {
-        //     if (!session.user?.id && !user) {
-        //         router.push("/welcome");
-        //     }
-        //     setLoading(false)
-        // }
-
-        // updateSession();
-    },[]);
-
-
-    if (!user?.id) {
-        return (
-            <Container>
-              <Title order={2} align="center" mb="md">
-                Please fill out the form!
-              </Title>
-              <Button fullWidth>Form</Button>
-            </Container>
-        );
+    if (status === "loading") return <p>Loading...</p>;
+    if (!dbUser) {
+      return (
+        <div>
+          <h1>Loading</h1>
+        </div>
+      );
     }
-    if(user?.id) {
-        return (
-            <div>
-                <DailySummary user={user} />
-                <MealPanel />
-                <Workout />
-            </div>
-        );
-    }
+
+    return (
+        <div>
+            <DailySummary user={dbUser} />
+            <MealPanel />
+            <Workout />
+        </div>
+    );
+    
     
 }
