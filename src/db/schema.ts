@@ -12,25 +12,26 @@ export const users = sqliteTable('users', {
     age: integer('age'),
     weight: real('weight'),
     height: real('height'),
+    goal: integer("goal"),
+    activity: real("activity"),
     goalCalories: integer('goal_calories'),
     goalProtein: integer('goal_protein'),
     goalCarbs: integer('goal_carbs'),
     goalFat: integer('goal_fat'),
+    
   });
 
 export const workouts = sqliteTable('workouts', {
 id: integer('id').primaryKey(),
 userId: integer('user_id')
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
 date: text('date').notNull(), 
 });
 
 export const exercises = sqliteTable("exercises", {
   id: integer("id").primaryKey(),
-  workoutId: integer("workout_id")
-    .notNull()
-    .references(() => workouts.id, { onDelete: "cascade" }), 
+  workoutId: integer("workout_id").notNull(),
   name: text("name").notNull(), 
   unit: text("unit").notNull(),
   sets: integer("sets").notNull(),
@@ -58,7 +59,7 @@ export const exerciseRelations = relations(exercises, ({ many }) => ({
 export const nutritionLogs = sqliteTable('nutrition_logs', {
     id: integer('id').primaryKey(),
     userId: integer('user_id')
-        .references(() => users.id)
+        .references(() => users.id, { onDelete: "cascade" })
         .notNull(),
     date: text('date').notNull(),
     calories: integer('calories'),

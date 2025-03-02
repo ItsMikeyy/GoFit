@@ -38,37 +38,10 @@ export async function POST(req) {
             weight = convertToKg(data.weight)
         }
     
-        let bmr = 0;
-        if (data.gender === "male") {
-            bmr = (10 * weight + 6.25 * data.height - 5 * data.age + 5) * data.activity;
-        } else {
-            bmr = (10 * weight + 6.25 * data.height - 5 * data.age - 161) * data.activity;
-        }
+        const userData = calculateMacros(data, weight, session)
 
-        const goalCalories = Math.floor(bmr + Number(data.goal));
-
-        const proteinGrams = Math.floor(2 * weight);
-        const proteinCalories = proteinGrams * 4;
-
-
-        const carbCalories = goalCalories * 0.4;
-        const fatCalories = goalCalories - (proteinCalories + carbCalories);
-        const carbGrams = Math.floor(carbCalories / 4);
-        const fatGrams = Math.floor(fatCalories / 9);
-        console.log(session)
-        const user_data = {
-            ...data,
-            email: session.user.email,
-            goalCalories: goalCalories,
-            goalProtein: proteinGrams,
-            goalFat: fatGrams,
-            goalCarbs: carbGrams,
-        }
-        delete user_data.goal;
-        delete user_data.activity;
-        console.log(user_data);
         const result = await db.insert(users).values({
-            ...user_data,
+            ...userData,
             onboardingCompleted: 1,
             email: session.user.email,
         }).execute();
@@ -91,6 +64,33 @@ const convertToKg = (weight) => {
     return (weight * 0.453592).toFixed(2);
 }
 
-const convertToCm = (height) => {
-    return (height * 0.453592).toFixed(2);
+
+
+const calculateMacros = (data, weight, session) => {
+    let bmr = 0;
+    if (data.gender === "male") {
+        bmr = (10 * weight + 6.25 * data.height - 5 * data.age + 5) * data.activity;
+    } else {
+        bmr = (10 * weight + 6.25 * data.height - 5 * data.age - 161) * data.activity;
+    }
+
+    const goalCalories = Math.floor(bmr + Number(data.goal));
+
+    const proteinGrams = Math.floor(2 * weight);
+    const proteinCalories = proteinGrams * 4;
+
+
+    const carbCalories = goalCalories * 0.4;
+    const fatCalories = goalCalories - (proteinCalories + carbCalories);
+    const carbGrams = Math.floor(carbCalories / 4);
+    const fatGrams = Math.floor(fatCalories / 9);
+    const user_data = {
+        ...data,
+        email: session.user.email,
+        goalCalories: goalCalories,
+        goalProtein: proteinGrams,
+        goalFat: fatGrams,
+        goalCarbs: carbGrams,
+    }
+    return user_data;
 }

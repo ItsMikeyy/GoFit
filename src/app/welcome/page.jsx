@@ -68,7 +68,6 @@ const Welcome = () => {
       headers: { "Content-Type": "application/json" },
     });
     
-    console.log(res);
     if (res.ok) {
       await update({ onboardingCompleted: 1 });
       router.push("/dashboard");
@@ -86,7 +85,7 @@ const Welcome = () => {
     <Container size="sm">
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Title order={2} align="center" mb="lg">
-          Welcome to Fitness Tracker
+          Welcome to GoFit
         </Title>
 
         <form onSubmit={handleSubmit}>
