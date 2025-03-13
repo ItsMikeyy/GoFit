@@ -2,8 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button, TextInput, NumberInput, Box, } from "@mantine/core";
-import formatDate from "@/app/(tools)/formatdate";
-
+import { useDate } from "@/app/context/DateContext";
 const EditMealModal = (props) => {
     const {meal} = props
    
@@ -13,8 +12,8 @@ const EditMealModal = (props) => {
     const [error, setError] = useState("");
     const [clicked, setClicked] = useState(false);
     const [action, setAction] = useState("")
+    const {date} = useDate();
 
-    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -37,7 +36,7 @@ const EditMealModal = (props) => {
             carbs: Math.floor((formData.carbs * formData.amount) ),
             fat: Math.floor((formData.fat * formData.amount)),
             calories: ((formData.protein * 4) + (formData.carbs * 4) + (formData.fat * 9)) * formData.amount,
-            date: formatDate(new Date())
+            date: date
         };
         return data;
     }
@@ -49,8 +48,6 @@ const EditMealModal = (props) => {
         let res;
         const macroData = calculateMacros();
         if (action === "edit") {
-            console.log("Editing meal...");
-            console.log("FETCh")
             res = await fetch("/api/meal", {method: "PATCH",
                 body: JSON.stringify(macroData),
             })

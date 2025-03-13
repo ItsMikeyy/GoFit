@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 
 const EditProfileModal = ({profile}) => {
-
   
     const [formData, setFormData] = useState({
         name: profile.name,
@@ -29,7 +28,7 @@ const EditProfileModal = ({profile}) => {
         goal: profile.goal,
     });
 
-    
+    const { data: session, status, update } = useSession();
     const [error, setError] = useState("");
     const [clicked, setClicked] = useState(false);
 
@@ -54,8 +53,10 @@ const EditProfileModal = ({profile}) => {
             const res = await fetch("/api/user/edit", {method: "PATCH",
                 body: JSON.stringify(formData)
             })
-            const data = await res.json()
+            const updateData = await res.json()
             if (res.ok) {
+                console.log("UPDATE", updateData)
+                localStorage.setItem("userSession", JSON.stringify(updateData.user))
                 window.location.reload()
                 setError("");
             }

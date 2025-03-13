@@ -28,16 +28,21 @@ export const authOptions = {
         },
 
         async session({ session, token  }) {
-            if (!token?.user) {
-                console.log("fetch")
+            // const dbUser = await db.select().from(users).where(eq(users.email, token.email));
+            // if (dbUser.length > 0) {
+            //     token.user = dbUser[0];
+            //     session.user.dbUser = dbUser[0];              
+            // }
+
+            if (token.user) {
+                session.user.dbUser = token.user;
+            }
+            else {
                 const dbUser = await db.select().from(users).where(eq(users.email, token.email));
                 if (dbUser.length > 0) {
                     token.user = dbUser[0];
                     session.user.dbUser = dbUser[0];              
                 }
-            }
-            if (token.user) {
-                session.user.dbUser = token.user;
             }
             return session;
           },

@@ -29,7 +29,8 @@ export async function PATCH(req) {
         if(!res) {
             return NextResponse.json({message: "Error fetching user"}, {status: 500});
         }
-        return NextResponse.json({message: "User updated"}, {status: 200});
+        console.log(res)
+        return NextResponse.json({message: "User updated", user: userData}, {status: 200});
        
     } catch(e) {
         console.log(e)

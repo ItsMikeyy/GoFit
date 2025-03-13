@@ -1,8 +1,6 @@
 "use client"
-import { useUser } from "../components/UserContext";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Container, Card, Text, Group, Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -10,28 +8,35 @@ import EditProfileModal from "../components/Profile/EditProfileModal";
 
 const Profile = () => {  
   const { data: session, status, update } = useSession();
-  const user = useUser();
   const [dbUser, setDbUser] = useState(session?.user?.dbUser)
   const [profile, setProfile] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
   const [fetched, setFetched] = useState(false); 
 
   useEffect(() => {
-      const fetchUser = async () => {
-        if (!session.user.dbUser && !fetched) {
-          setFetched(true); 
-          const updatedSession = await update();   
-          setDbUser(updatedSession?.user?.dbUser); 
-        
+        const fetchUser = async () => {
+        const userData = localStorage.getItem("userSession")
+        if(!userData && !session.user.dbUser && !fetched) {
+            setFetched(true); 
+            const updatedSession = await update();   
+            console.log(updatedSession)
+            localStorage.setItem("userSession", JSON.stringify(updatedSession?.user?.dbUser))
+            setDbUser(updatedSession?.user?.dbUser); 
+        }
+        else {
+            const parsedUserData = JSON.parse(userData)
+            setDbUser(parsedUserData)
         }
       };
       fetchUser();
     }, [update, fetched]); 
 
-    const handleEdit = () => {
-      setProfile(dbUser)
-      open()
-    }
+  const handleEdit = () => {
+    setProfile(dbUser)
+    open()
+  }
+
+
   if (status === "loading") return <p>Loading...</p>;
   if (!dbUser) {
     return (
@@ -70,7 +75,7 @@ const Profile = () => {
             </Group>
             <Group>
               <Text size="md">
-                <strong>Weight:</strong> {dbUser.weight} {user.unit === "Pounds" ? "lbs" : "kg"}
+                <strong>Weight:</strong> {dbUser.weight} {dbUser.unit === "Pounds" ? "lbs" : "kg"}
               </Text>
             </Group>
             <Group>

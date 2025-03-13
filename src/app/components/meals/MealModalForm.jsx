@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { Button, TextInput, NumberInput, Box } from "@mantine/core";
-import formatDate from "@/app/(tools)/formatdate";
-const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
+import { useDate } from "@/app/context/DateContext";
+const MealModalForm = (props) => {
+
     let [formData, setFormData] = useState({
         name: '',
         amount: '',
@@ -10,11 +11,11 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
         protein: '',
         carbs: '',
         fat: '',
-        "type": type
+        "type": props.type
     });
     const [error, setError] = useState("");
     const [clicked, setClicked] = useState(false);
-
+    const {date} = useDate();
     
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,7 +39,7 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
             carbs: Math.floor((formData.carbs * formData.amount) ),
             fat: Math.floor((formData.fat * formData.amount)),
             calories: ((formData.protein * 4) + (formData.carbs * 4) + (formData.fat * 9)) * formData.amount,
-            date: formatDate(new Date())
+            date: date
         };
         return data;
     }
@@ -50,14 +51,14 @@ const MealModalForm = ({ opened, onClose, onSubmit, type }) => {
         setClicked(true);
         const res = await fetch("/api/meal", {method: "POST", body: JSON.stringify(postData)});
         if (res.ok) {
-            window.location.reload()
             setError("");
+            window.location.reload()
         } else {
             const data = await res.json()
             setError(data.message);
             setClicked(false);
         }
-        window.location.reload();
+        
     };
 
     return (

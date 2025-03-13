@@ -2,13 +2,19 @@ import { useState } from "react";
 import { TextInput, NumberInput, Select, Button, Box, Group } from "@mantine/core";
 import { useDate } from "@/app/context/DateContext";
 
-const AdvancedWorkoutInputs = (props) => {
-    console.log(props)
+const EditAdvancedWorkout = (props) => {
+    const {set, exercise} = props;
+    console.log(set,exercise)
     const [formData, setFormData] = useState({
-        sets: [{id: 1, weight: "", reps: ""}],
-        exerciseName: "",
-        unit: "",
-        type: "advanced"
+        sets: set.map(s => ({
+            id: s.id,
+            weight: s.weight,
+            reps: s.reps,
+        })),
+        exerciseName: exercise.name,
+        unit: exercise.unit,
+        type: "advanced",
+        exerciseId: exercise.id
     })
 
     const [error, setError] = useState("");
@@ -54,7 +60,7 @@ const AdvancedWorkoutInputs = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setClicked(true);
-        const res = await fetch(`/api/exercise?date=${date}`, {method: "POST", body: JSON.stringify(formData)});
+        const res = await fetch(`/api/exercise/edit?date=${date}`, {method: "PATCH", body: JSON.stringify(formData)});
         if (res.ok) {
             window.location.reload()
             setError("");
@@ -68,10 +74,11 @@ const AdvancedWorkoutInputs = (props) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <TextInput label="Workout Name" placeholder="Enter workout name" required name="exerciseName" onChange={handleNameChange}/>
+            <TextInput value={formData.exerciseName} label="Workout Name" placeholder="Enter workout name" required name="exerciseName" onChange={handleNameChange}/>
             <Select
             label="Unit"
             placeholder="Select unit"
+            value={formData.unit}
             data={["Pounds", "Kilograms"]}
             required
             mt="sm"
@@ -98,10 +105,13 @@ const AdvancedWorkoutInputs = (props) => {
             </div>
             ))}
             <Button mt="sm" onClick={addSet}>+ Add Set</Button>
-            {!clicked ? <Button type="submit" fullWidth mt="md">Submit</Button> : <Button disabled type="submit" fullWidth mt="md">Submit</Button>}
-            {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
+            <Box mt="md" style={{ display: 'flex', justifyContent: 'center' }}>
+                {!clicked ? <Button type="submit" style={{margin: "10px"}}fullWidth mt="md">Edit Workout</Button> : <Button disabled type="submit" style={{margin: "10px"}} fullWidth mt="md">Edit Workout</Button>}
+                {!clicked ? <Button type="submit" style={{margin: "10px"}} color="red" fullWidth mt="md">Delete Workout</Button> : <Button disabled type="submit" style={{margin: "10px"}} fullWidth mt="md">Delete Workout</Button>}
+                {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
+            </Box>
         </form>
     );
 }
 
-export default AdvancedWorkoutInputs;
+export default EditAdvancedWorkout;

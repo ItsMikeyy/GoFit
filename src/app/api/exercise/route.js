@@ -4,7 +4,6 @@ import { db } from "@/db";
 import { exercises, exerciseSets, users, workouts } from "@/db/schema";
 import { getServerSession } from "next-auth";
 import { eq, and } from "drizzle-orm";
-import formatDate from "../../(tools)/formatdate";
 
 
 
@@ -16,7 +15,7 @@ export async function GET(req) {
 
     try {
         const {searchParams} = new URL(req.url);
-        const date = searchParams.get("date") ?? formatDate(new Date());
+        const date = searchParams.get("date")
 
         const wid = await getWorkoutID(session,date);
         if (!wid) {
@@ -41,7 +40,7 @@ export async function POST(req) {
 
     try {
         const {searchParams} = new URL(req.url);
-        const date = searchParams.get("date") ?? formatDate(new Date());
+        const date = searchParams.get("date")
         const data = await req.json();
 
         const wid = await getWorkoutID(session, date);
@@ -128,7 +127,7 @@ const getWorkoutID = async (session, date) => {
 }
 
 const getExercises = async (wid, date, session) => {
-
+    console.log(wid)
     const exerciseData = await db.select().from(exercises).where(eq(exercises.workoutId, wid));
 
     if (exerciseData.length === 0) {

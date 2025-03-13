@@ -1,12 +1,13 @@
 "use client";
-import { Card, Text, Grid, Box, Flex, Progress, RingProgress } from "@mantine/core";
+import { Card, Text, Grid, Box, Flex, Progress, RingProgress, } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks"; 
-import formatDate from "../(tools)/formatdate";
+import { useDate } from "../context/DateContext";
 
 const DailySummary = (props) => {
     const [nutrition, setNutrition] = useState({});
     const [loading, setLoading] = useState(true);
+    const { date, setDate } = useDate();
     const isSmallScreen = useMediaQuery('(max-width: 768px)'); 
 
     useEffect(() => {
@@ -16,7 +17,6 @@ const DailySummary = (props) => {
 
         const fetchNutrition = async () => {
             try {
-                const date = formatDate(new Date())
                 const res = await fetch(`/api/nutrition?date=${date}`);
                 const data = await res.json();
                 
@@ -36,7 +36,12 @@ const DailySummary = (props) => {
         };
 
         fetchNutrition();
-    }, []);
+    }, [date]); 
+
+    const handleDateChange = (e) => {
+        console.log(e.target.value)
+        setDate(e.target.value)
+    }
 
     if (loading) return <p>Loading...</p>;
     if (!nutrition) return <p>Something went wrong..</p>;
@@ -48,13 +53,12 @@ const DailySummary = (props) => {
     const proteinCaloriesPercentage = ((nutrition.protein * 4) / props.user.goalCalories) * 100;
     const carbsCaloriesPercentage = ((nutrition.carbs * 4) / props.user.goalCalories) * 100;
     const fatCaloriesPercentage = ((nutrition.fat * 9) / props.user.goalCalories) * 100;
-    
     return (
         <Card shadow="xs" padding="md" radius="md">
             <Flex direction="column" gap="xl">
                 <Flex justify="space-between" align="center" wrap="wrap">
                     <Text size="xl">Daily Summary</Text>
-                    <Text size="md">Date: {formatDate(new Date())}</Text>
+                    <input type="date" max={date} onChange={handleDateChange} value={date} />
                 </Flex>
 
                 {isSmallScreen && (

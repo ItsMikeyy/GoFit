@@ -16,7 +16,11 @@ export default function NavBar() {
     setOpen(false); 
     setTimeout(() => router.push(path), 300); 
   };
-
+  const handleSignOut = () => {
+    localStorage.removeItem("userSession"); 
+    setOpen(false); 
+    signOut();
+  }
   return (
     <Box p="md"
       style={{
@@ -49,7 +53,7 @@ export default function NavBar() {
           {session ? (
             <>
               <Button variant="subtle" onClick={() => router.push("/profile")}>Profile</Button>
-              <Button color="red" onClick={() => signOut()}>Sign Out</Button>
+              <Button color="red" onClick={handleSignOut}>Sign Out</Button>
             </>
           ) : <Button variant="subtle" onClick={() => signIn()}>Sign In</Button>}
         </Group>
@@ -72,7 +76,7 @@ export default function NavBar() {
             <>
               <Button fullWidth variant="subtle" onClick={() => handleNavigation("/dashboard")}>Dashboard</Button>
               <Button fullWidth variant="subtle" onClick={() => handleNavigation("/profile")}>Profile</Button>
-              <Button fullWidth color="red" onClick={() => { setOpen(false); signOut(); }}>Sign Out</Button>
+              <Button fullWidth color="red" onClick={handleSignOut}>Sign Out</Button>
             </>
           )}
           {!session && <Button fullWidth variant="subtle" onClick={() => handleNavigation("/signin")}>Sign In</Button>}

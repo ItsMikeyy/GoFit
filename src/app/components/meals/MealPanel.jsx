@@ -1,21 +1,19 @@
 import {Card, Text, Tabs, Button} from '@mantine/core';
 import MealList from './MealList';
-import MealModal from './MealModal';
 import { useState, useEffect } from 'react';
-import formatDate from '@/app/(tools)/formatdate';
-
+import { useDate } from '@/app/context/DateContext';
 const MealPanel = () => { 
     const [meals, setMeals] = useState([])
+    const { date } = useDate();
     useEffect(() => {
-        const fetchMeals = async() => {
-            const date = formatDate(new Date()) 
-            const res = await fetch(`/api/meal?date=${date}`);
-            const resData = await res.json();
-            setMeals(resData.data);
-        } 
         fetchMeals()
-    }, [])
-    
+    }, [date])
+
+    async function fetchMeals () {
+        const res = await fetch(`/api/meal?date=${date}`);
+        const resData = await res.json();
+        setMeals(resData.data);
+    } 
     return (
         <Card shadow="xs" padding="md" radius="md" style={{ marginTop: '20px' }}>
             <Text size="xl">Meal List</Text>

@@ -1,54 +1,51 @@
 import { useEffect, useState } from "react";
 import { Card, Text, Group, Badge, Button, Modal } from "@mantine/core";
-import formatDate from "@/app/(tools)/formatdate";
 import { useDisclosure } from "@mantine/hooks";
 import EditSimpleWorkout from "./EditSimpleWorkout";
-const ExerciseList = () => {
+import { useDate } from "@/app/context/DateContext";
+import EditAdvancedWorkout from "./EditAdvancedWorkout";
+const ExerciseList = (props) => {
     const [exercises, setExercies] = useState([])
     const [expand, setExpand] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [attempts, setAttempts] = useState(0);
     const [editExercise, setEditExercise] = useState(null); 
     const [editSet, setEditSet] = useState(null); 
     const [opened, { open, close }] = useDisclosure(false);
-    
+    const { date } = useDate();
+
     useEffect(() => {
-      let intervalId;
-      
       const fetchWorkoutLog = async () => {
         try {
-          const date = formatDate(new Date())
           const res = await fetch(`/api/exercise?date=${date}`);
           if (!res.ok) throw new Error("Failed to fetch workout log");
-  
+    
           const data = await res.json();
-  
           if (data.data) {
-            setExercies(data.data)
+            setExercies(data.data);
             setLoading(false);
-            clearInterval(intervalId); 
           } else {
             throw new Error("No workout log found yet");
           }
         } catch (err) {
-          setAttempts((prev) => prev + 1);
-  
-          if (attempts >= 4) {
-            setError("Failed to load workout log. Please try again later.");
-            setLoading(false);
-            clearInterval(intervalId); 
-          }
+          console.error(err);
+          setError("Failed to load workout.");
         }
-      };
-      fetchWorkoutLog(); 
-    intervalId = setInterval(fetchWorkoutLog, 3000); 
-
-    return () => clearInterval(intervalId); 
-  }, [attempts]); 
+        finally {
+          setLoading(false);
+      }
+    };
+    console.log(props.workout)
+      if (props.workout) {
+        console.log(props.workout)
+        fetchWorkoutLog()
+      }
+    }, [date, props.workout]); 
     
 
     const handleEdit = (set, exercise) => {
+      console.log("set", set)
+      console.log("exercise", exercise)
       setEditExercise(exercise)
       setEditSet(set)
       open()
@@ -86,19 +83,23 @@ const ExerciseList = () => {
                       <Card key={set.id} shadow="xs" padding="md" radius="md" style={{ marginTop: "10px" }}>
                         <Text>{set.setOrder != 0 ? "" : exercise.sets + "x"} Set {set.setOrder != 0 ? index + 1 : ""}: {set.weight} {exercise.unit === "Pounds" ? "lbs" : "kg"} × {set.reps} reps</Text>
                       </Card>
-                      <Button onClick={() => handleEdit(set, exercise)} style={{margin: "10px 0"}}>Edit</Button>
+                      
                     </>
                   ))}
+                  <Button onClick={() => handleEdit(sets, exercise)} style={{margin: "10px 0"}}>Edit</Button>
                 </div>
                 
               )}
             </Card>
           ))}
         </div>
-        {editExercise && editSet &&
-        <Modal opened={opened} onClose={close} title="Edit Workout">
-          <EditSimpleWorkout set={editSet} exercise={editExercise}/>
-        </Modal>
+        {(editExercise && editSet && editSet[0].setOrder === 0) ?
+          <Modal opened={opened} onClose={close} title="Edit Workout">
+            <EditSimpleWorkout set={editSet[0]} exercise={editExercise}/>
+          </Modal> :
+          <Modal opened={opened} onClose={close} title="Edit Workout">
+            <EditAdvancedWorkout set={editSet} exercise={editExercise}/>
+          </Modal> 
         }
       </>
     );

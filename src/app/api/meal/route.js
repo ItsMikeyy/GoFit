@@ -4,7 +4,6 @@ import { authOptions } from "../auth/[...nextauth]/route";
 import { db } from "@/db";
 import { meals, nutritionLogs } from "@/db/schema"; 
 import { sql, eq, and } from "drizzle-orm";
-import formatDate from "@/app/(tools)/formatdate";
 
 export const GET = async (req) => {
     const session = await getServerSession(authOptions);
@@ -14,7 +13,7 @@ export const GET = async (req) => {
     }
     try {
         const {searchParams} = new URL(req.url);
-        const date = searchParams.get("date") ?? formatDate(new Date());
+        const date = searchParams.get("date") 
         const result = await db.select().from(meals).where(and(
             eq(meals.userId, session.user.dbUser.id),
             eq(meals.date, date)

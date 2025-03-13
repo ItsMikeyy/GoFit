@@ -1,10 +1,10 @@
 "use client";
 import { TextInput, NumberInput, Select, Button, Box} from "@mantine/core"
-import { json } from "drizzle-orm/mysql-core";
 import { useState } from "react"
 
 const EditSimpleWorkout = (props) => {
     const {set, exercise} = props;
+    console.log(set,exercise)
     const [formData, setFormData] = useState({
             exerciseName: exercise.name,
             weight: set.weight,

@@ -3,9 +3,9 @@ import "./globals.css";
 import '@mantine/core/styles.css';
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/app/components/SessionProvider";
-import { UserProvider } from "./components/UserContext";
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import NavMenu from "./components/NavMenu";
+import { DateProvider } from "./context/DateContext";
 
 
 const geistSans = Geist({
@@ -32,12 +32,12 @@ export default async function RootLayout({ children }) {
       </head> */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <MantineProvider>
-          <SessionProvider session={session}>
-            <UserProvider>
-              <NavMenu />
-              {children}
-            </UserProvider>
-          </SessionProvider>
+          <DateProvider>
+            <SessionProvider session={session}>
+                <NavMenu />
+                {children}
+            </SessionProvider>
+          </DateProvider>
         </MantineProvider>
       </body>
     </html>

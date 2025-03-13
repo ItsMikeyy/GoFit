@@ -1,4 +1,5 @@
 "use client";
+import { useDate } from "@/app/context/DateContext";
 import { TextInput, NumberInput, Select, Button} from "@mantine/core"
 import { useState } from "react"
 const SimpleWorkoutInputs = () => {
@@ -13,11 +14,12 @@ const SimpleWorkoutInputs = () => {
 
     const [error, setError] = useState("");
     const [clicked, setClicked] = useState(false);
+    const {date} = useDate();
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setClicked(true);
-        const res = await fetch("/api/exercise", {method: "POST", body: JSON.stringify(formData)});
+        const res = await fetch(`/api/exercise?date=${date}`, {method: "POST", body: JSON.stringify(formData)});
         if (res.ok) {
             window.location.reload()
             setError("");
