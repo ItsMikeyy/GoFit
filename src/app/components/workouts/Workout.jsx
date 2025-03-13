@@ -20,7 +20,6 @@ const Workout = () => {
                 if (!res.ok) throw new Error("Failed to fetch workout");
 
                 const data = await res.json();
-                console.log(data)
                 setWorkoutData(data.workout);
             } catch (err) {
                 console.error(err);

@@ -35,17 +35,13 @@ const ExerciseList = (props) => {
           setLoading(false);
       }
     };
-    console.log(props.workout)
       if (props.workout) {
-        console.log(props.workout)
         fetchWorkoutLog()
       }
     }, [date, props.workout]); 
     
 
     const handleEdit = (set, exercise) => {
-      console.log("set", set)
-      console.log("exercise", exercise)
       setEditExercise(exercise)
       setEditSet(set)
       open()
