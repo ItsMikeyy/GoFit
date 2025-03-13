@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useUser } from "../components/UserContext";
 import {
   TextInput,
   NumberInput,
@@ -18,7 +17,6 @@ import {
 const Welcome = () => {
   const { data: session, status, update } = useSession();
   const router = useRouter();
-  const user = useUser();
 
 
   useEffect(() => {
@@ -27,13 +25,6 @@ const Welcome = () => {
       return
     }      
     update()
-
-
-    if (user?.id) {
-      console.log("here")
-        router.push("/dashboard");
-    }
-    
     
   }, []);
 
