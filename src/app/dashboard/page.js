@@ -13,6 +13,7 @@ export default function Dashboard() {
 		const fetchUser = async () => {
 			const userData = localStorage.getItem("userSession")
 			if(!userData && !session.user.dbUser && !fetched) {
+				console.log("Fetch")
 				setFetched(true); 
 				const updatedSession = await update();   
 				console.log(updatedSession)
@@ -20,6 +21,7 @@ export default function Dashboard() {
 				setDbUser(updatedSession?.user?.dbUser); 
 			}
 			else {
+				console.log("Grab")
 				const parsedUserData = JSON.parse(userData)
 				setDbUser(parsedUserData)
 			}
@@ -36,7 +38,7 @@ export default function Dashboard() {
 		if (!dbUser) {
 		return (
 			<div>
-			<h1>Loading</h1>
+			<h1>Loading... please refresh if this is taking to long </h1>
 			</div>
 		);
 		}
