@@ -33,7 +33,16 @@ const Workout = () => {
     }, [date]);
 
     return (    
-        <Card shadow="xs" padding="md" radius="md" style={{ marginTop: '20px' }}>
+        <Card 
+            shadow="xl" 
+            padding="xl" 
+            radius="md" 
+            style={{ 
+                marginTop: '20px',
+                background: "white",
+                border: "1px solid #e9ecef"
+            }}
+        >
             <Text size="xl">Workout</Text>
             {loading ? (
                 <Text>Loading...</Text>
@@ -41,12 +50,56 @@ const Workout = () => {
                 <Text c="red">{error}</Text>
             ) : (
                 <>
-                    <Modal opened={opened} onClose={close} title="Add Workout">
+                    <Modal 
+                        opened={opened} 
+                        onClose={close} 
+                        title="Add Workout"
+                        size="lg"
+                        centered
+                        styles={{
+                            modal: {
+                                zIndex: 100,
+                                background: "white"
+                            },
+                            overlay: {
+                                zIndex: 200,
+                                backgroundColor: "rgba(0, 0, 0, 0.5)"
+                            },
+                            header: {
+                                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                color: "white",
+                                borderRadius: "8px 8px 0 0",
+                                padding: "1rem 1.5rem"
+                            },
+                            content: {
+                                borderRadius: "8px",
+                                boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                                background: "white"
+                            },
+                            body: {
+                                padding: "1.5rem",
+                                background: "white"
+                            }
+                        }}
+                    >
                         <WorkoutForm workout={workoutData} />
                     </Modal>
                     <ExerciseList workout={workoutData} />
-                    <Button onClick={open} size="s" style={{ width: "5%", marginTop: '20px', minWidth: "100px" }}>
-                        Add
+                    <Button 
+                        onClick={open} 
+                        size="md" 
+                        style={{ 
+                            marginTop: '20px', 
+                            minWidth: "120px",
+                            background: "linear-gradient(45deg, #667eea, #764ba2)",
+                            border: "none",
+                            borderRadius: "25px",
+                            fontWeight: 600,
+                            boxShadow: "0 4px 15px rgba(102, 126, 234, 0.3)",
+                            
+                        }}
+                    >
+                        Add Workout
                     </Button>
                 </>
             )}

@@ -15,7 +15,16 @@ const MealPanel = () => {
         setMeals(resData.data);
     } 
     return (
-        <Card shadow="xs" padding="md" radius="md" style={{ marginTop: '20px' }}>
+        <Card 
+            shadow="xl" 
+            padding="xl" 
+            radius="md" 
+            style={{ 
+                marginTop: '20px',
+                background: "white",
+                border: "1px solid #e9ecef"
+            }}
+        >
             <Text size="xl">Meal List</Text>
             <Tabs variant="pills" defaultValue="breakfast">
                 <Tabs.List justify='center'>

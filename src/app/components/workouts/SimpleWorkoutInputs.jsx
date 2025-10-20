@@ -1,6 +1,6 @@
 "use client";
 import { useDate } from "@/app/context/DateContext";
-import { TextInput, NumberInput, Select, Button} from "@mantine/core"
+import { TextInput, NumberInput, Select, Button, Box, Text} from "@mantine/core"
 import { useState } from "react"
 const SimpleWorkoutInputs = () => {
     const [formData, setFormData] = useState({
@@ -46,28 +46,94 @@ const SimpleWorkoutInputs = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-        <TextInput label="Workout Name" placeholder="Enter workout name" name="exerciseName" required onChange={handleTextChange} />
-            <div className="flex gap-2 justify-between">
-                <NumberInput label="Weight" placeholder="Enter weight" required mt="sm" name="weight" onChange={(value) => handleChange('weight', value)} />
-                <Select
-                    label="Unit"
-                    placeholder="Unit"
-                    data={["Pounds", "Kilograms"]}
-                    required
-                    mt="sm"
-                    styles={{ input: { width: '100px' } }}
-                    name = "unit"
-                    onChange={(value) => handleChange('unit', value)}  
-
+        <Box style={{ background: "white", padding: "1rem" }}>
+            <form onSubmit={handleSubmit}>
+                <TextInput 
+                    label="Workout Name" 
+                    placeholder="Enter workout name" 
+                    name="exerciseName" 
+                    required 
+                    onChange={handleTextChange}
+                    mb="md"
                 />
-            </div>
-           
-            <NumberInput label="Reps" placeholder="Enter reps" required mt="sm" name="reps" onChange={(value) => handleChange('reps', value)} />
-            <NumberInput label="Sets" placeholder="Enter sets" required mt="sm" name="sets" onChange={(value) => handleChange('sets', value)}  />
-            {!clicked ? <Button type="submit" fullWidth mt="md">Submit</Button> : <Button disabled type="submit" fullWidth mt="md">Submit</Button>}
-            {error && <h1 className="p-4 text-red-700 text-center">Error</h1>}
-        </form>
+                <Box style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                    <NumberInput 
+                        label="Weight" 
+                        placeholder="Enter weight" 
+                        required 
+                        name="weight" 
+                        onChange={(value) => handleChange('weight', value)}
+                        style={{ flex: 1 }}
+                    />
+                    <Select
+                        label="Unit"
+                        placeholder="Unit"
+                        data={["Pounds", "Kilograms"]}
+                        required
+                        name="unit"
+                        onChange={(value) => handleChange('unit', value)}
+                        style={{ flex: 1 }}
+                    />
+                </Box>
+               
+                <NumberInput 
+                    label="Reps" 
+                    placeholder="Enter reps" 
+                    required 
+                    name="reps" 
+                    onChange={(value) => handleChange('reps', value)}
+                    mb="md"
+                />
+                <NumberInput 
+                    label="Sets" 
+                    placeholder="Enter sets" 
+                    required 
+                    name="sets" 
+                    onChange={(value) => handleChange('sets', value)}
+                    mb="md"
+                />
+                
+                <Box mt="md" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {!clicked ? (
+                        <Button 
+                            type="submit" 
+                            fullWidth 
+                            size="md"
+                            style={{
+                                background: "linear-gradient(45deg, #667eea, #764ba2)",
+                                border: "none",
+                                borderRadius: "25px",
+                                fontWeight: 600,
+                                boxShadow: "0 4px 15px rgba(102, 126, 234, 0.3)"
+                            }}
+                        >
+                            Add Workout
+                        </Button>
+                    ) : (
+                        <Button 
+                            disabled 
+                            type="submit" 
+                            fullWidth 
+                            size="md"
+                            style={{
+                                background: "linear-gradient(45deg, #667eea, #764ba2)",
+                                border: "none",
+                                borderRadius: "25px",
+                                fontWeight: 600,
+                                opacity: 0.7
+                            }}
+                        >
+                            Adding Workout...
+                        </Button>
+                    )}
+                    {error && (
+                        <Text c="red" size="sm" ta="center" style={{ padding: "0.5rem" }}>
+                            {error}
+                        </Text>
+                    )}
+                </Box>
+            </form>
+        </Box>
     )
 }
 

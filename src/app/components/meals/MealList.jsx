@@ -21,7 +21,22 @@ export default function MealList(props) {
         {props.meal
           .filter(meal => meal.type === props.type)
           .map((meal, id) => (
-            <Card onClick={()=>handleExpand(id)} key={id} shadow="xs" padding="md" radius="md" style={{ marginTop: '10px' }}>
+            <Card 
+                onClick={()=>handleExpand(id)} 
+                key={id} 
+                shadow="sm" 
+                padding="md" 
+                radius="md" 
+                style={{ 
+                    marginTop: '10px',
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+                    }
+                }}
+            >
               <Text size="lg" style={{ cursor: "pointer" }}>{meal.name}</Text>
               {expanded === id &&
               <Collapse in={true}>
@@ -43,7 +58,20 @@ export default function MealList(props) {
                     <Progress  style={{ flex: 1, margin: '0 10px' }} value={((meal.fat * 9) / meal.calories) * 100}></Progress>
                     <Text size="sm">{Math.round((meal.fat * 9 / meal.calories) * 1000) / 10}%</Text>
                 </Flex>  
-                <Button onClick={() => handleEdit(meal)} style={{margin: "10px 0"}}>Edit</Button>
+                <Button 
+                    onClick={() => handleEdit(meal)} 
+                    size="sm"
+                    style={{
+                        margin: "10px 0",
+                        background: "linear-gradient(45deg, #667eea, #764ba2)",
+                        border: "none",
+                        borderRadius: "20px",
+                        fontWeight: 500,
+                        boxShadow: "0 2px 8px rgba(102, 126, 234, 0.3)"
+                    }}
+                >
+                    Edit
+                </Button>
 
               </Collapse>    
               }
@@ -51,7 +79,38 @@ export default function MealList(props) {
           ))}
       
       {meal && 
-        <Modal opened={opened} onClose={close} title="Edit Meal">
+        <Modal 
+            opened={opened} 
+            onClose={close} 
+            title="Edit Meal"
+            size="lg"
+            centered
+            styles={{
+                modal: {
+                    zIndex: 2000,
+                    background: "white"
+                },
+                overlay: {
+                    zIndex: 1999,
+                    backgroundColor: "rgba(0, 0, 0, 0.5)"
+                },
+                header: {
+                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    color: "white",
+                    borderRadius: "8px 8px 0 0",
+                    padding: "1rem 1.5rem"
+                },
+                content: {
+                    borderRadius: "8px",
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                    background: "white"
+                },
+                body: {
+                    padding: "1.5rem",
+                    background: "white"
+                }
+            }}
+        >
             <EditMealModal meal={meal} />
         </Modal>
       }
